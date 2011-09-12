@@ -133,7 +133,7 @@ function registerKey(evt, down) {
     }
 
     if (row == -1) {
-        var ch = String.fromCharCode(evt.charCode).toUpperCase();
+        var ch = String.fromCharCode(keyNum).toUpperCase();
 
         for (i = 0; i < 9 && row == -1; ++i)
             for (bit = 0; bit < 8; ++bit)
