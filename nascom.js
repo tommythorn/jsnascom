@@ -71,23 +71,11 @@ var keym = [
   0   /* ? ? CR - Newline BS */
 ];
 
-var kbd_translation = [
-/* 0 */  "xxxxxxxx",
-/* 1 */  "xyTXF5BH",
-/* 2 */  "xyYZD6NJ",
-/* 3 */  "xyUSE7MK",
-/* 4 */  "xyIAW8,L",
-/* 5 */  "xxOQ39.;",
-/* 6 */  "x[P120/'",
-/* 7 */  "x]R C4VG",
-/* 8 */  "x\rxxx-\n\007"
-];
-
 function nascom_init() {
     var i;
 
     nasfont = new Image();
-    nasfont.src = 'data:image/png;base64,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';
+    nasfont.src = 'data:image/png;base64,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';
 
     ctx = document.getElementById('screen').getContext('2d');
     z80_init();
@@ -114,26 +102,65 @@ function nascom_init() {
     run();
 }
 
+var kbd_translation = [
+// 7:NC for all rows
+/* 0 */  "xxcscxxx", // 6:NC 5:Ctrl 4:Shift 3:Ctrl 2:NC 1:NC 0:NC
+/* 1 */  "xyTXF5BH",
+/* 2 */  "xyYZD6NJ",
+/* 3 */  "xyUSE7MK",
+/* 4 */  "xyIAW8,L",
+/* 5 */  "xgOQ39.;", // 6:Graph?
+/* 6 */  "x[P120/:",
+/* 7 */  "x]R C4VG",
+/* 8 */  "x\rxxx-\n\007"
+];
+
+var gr_row = 5;
+var gr_col = 6;
+
 function registerKey(evt, down) {
     var keyNum = evt.keyCode;
+    var ch;
     var row = -1, bit, i;
 
-    console.log("registerKey " + keyNum + "/" + evt.charCode + "/" + String.fromCharCode(evt.charCode) + "/" + event.char);
 
-    // Based on http://www.cambiaresearch.com/c4/702b8cd1-e5b0-42e6-83ac-25f0306e3e25/javascript-char-codes-key-codes.aspx
+    /* Sigh, keyboard handing in JavaScript is a bloddy mess this is
+       based on
+       http://www.cambiaresearch.com/c4/702b8cd1-e5b0-42e6-83ac-25f0306e3e25/javascript-char-codes-key-codes.aspx
+       and has only so far been tested on Mac with Chrome. */
 
     switch (keyNum) {
+    case 17: row = 0, bit = 3; break; // control (5 works too)
+    case 16: row = 0, bit = 4; break; // shift
+//  case 220:row = 0, bit = 5; break; // control (@, guess)
+    case 38: row = 1, bit = 6; break; // up arrow
+    case 37: row = 2, bit = 6; break; // left arrow
+    case 40: row = 3, bit = 6; break; // down arrow
+    case 39: row = 4, bit = 6; break; // right arrow
+    case 18: row = 5, bit = 6; break; // graph (guess)
     case  8: row = 8, bit = 0; break; // backspace
     case 13: row = 8, bit = 1; break; // enter
-    case 16: row = 0, bit = 4; break; // shift
-    case 37: row = 2, bit = 6; break; // left arrow
-    case 38: row = 1, bit = 6; break; // up arrow
-    case 39: row = 4, bit = 6; break; // right arrow
-    case 40: row = 3, bit = 6; break; // down arrow
+    case 91: return; // Command/Apple
+    case 186: ch = ';'; break;
+    case 188: ch = ','; break;
+    case 190: ch = '.'; break;
+    case 191: ch = '/'; break;
+    case 219: ch = '['; break;
+    case 220: ch = '\r'; break;
+    case 221: ch = ']'; break;
+    case 222: ch = ':'; break; // Not ideal, pressing ' but getting :
     }
 
+    console.log("registerKey " + keyNum + "/" + ch + "/" +
+                evt.charCode + "/" +
+                String.fromCharCode(evt.charCode) + "/" +
+                event.char + "/" +
+                evt.keyIdentifier
+               );
+
     if (row == -1) {
-        var ch = String.fromCharCode(keyNum).toUpperCase();
+        if (ch == undefined)
+            ch = String.fromCharCode(keyNum).toUpperCase();
 
         for (i = 0; i < 9 && row == -1; ++i)
             for (bit = 0; bit < 8; ++bit)
