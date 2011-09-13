@@ -59,18 +59,7 @@ var nasfont;
 
 var keyp = 0;
 var port0 = 0;
-var keym = [
-  0,  /* ? ? ? Shift ? ? ? ? */
-  0,  /* ?!TXF5BH  ! = Up*/
-  0,  /* ?!YZD6NJ  ! = Left*/
-  0,  /* ?!USE7MK  ! = Down */
-  0,  /* ?!IAW8,L  ! = Right */
-  0,  /* ??OQ39.; */
-  0,  /* ?[P120/: */
-  0,  /* ?]R C4VG */
-  0   /* ? ? CR - Newline BS */
-];
-
+var keym = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 var replay_active = true;
 var replay_line = " HELLO THERE\n"
@@ -95,7 +84,17 @@ function form_enter() {
 
     var t1 = document.getElementById('t1');
     replay_line = t1.value + "\n";
-    //console.log("Got Enter with "+replay_line);
+
+    var l = "";
+    // Swap case (clearly I'm a JS n00b)
+    for (var i = 0; i < replay_line.length; ++i) {
+        if ('A' <= replay_line[i] && replay_line[i] <= 'Z')
+            l += replay_line[i].toLowerCase();
+        else
+            l += replay_line[i].toUpperCase();
+    }
+    replay_line = l;
+
     t1.value = "";
 }
 
@@ -136,22 +135,35 @@ function nascom_init() {
 
 var kbd_translation = [
 // 7:NC for all rows
-/* 0 */  "xxcscxxx", // 6:NC 5:Ctrl 4:Shift 3:Ctrl 2:NC 1:NC 0:NC
-/* 1 */  "xyTXF5BH",
-/* 2 */  "xyYZD6NJ",
-/* 3 */  "xyUSE7MK",
-/* 4 */  "xyIAW8,L",
-/* 5 */  "xgOQ39.;", // 6:Graph?
-/* 6 */  "x[P120/:",
-/* 7 */  "x]R C4VG",
-/* 8 */  "x\rxxx-\n\007"
+/* 0 */  "````````", // 6:NC 5:Ctrl 4:Shift 3:Ctrl 2:NC 1:NC 0:NC
+/* 1 */  "``TXF5BH",
+/* 2 */  "``YZD6NJ",
+/* 3 */  "``USE7MK",
+/* 4 */  "``IAW8,L",
+/* 5 */  "``OQ39.;", // 6:Graph?
+/* 6 */  "`[P120/:",
+/* 7 */  "`]R C4VG",
+/* 8 */  "`\r```-\n\007"
+];
+
+var kbd_translation_shifted = [
+// 7:NC for all rows
+/* 0 */  "``@`````", // 6:NC 5:Ctrl 4:Shift 3:Ctrl 2:NC 1:NC 0:NC
+/* 1 */  "``txf%bh",
+/* 2 */  "``yzd&nj",
+/* 3 */  "``use'mk",
+/* 4 */  "``iaw(,l",
+/* 5 */  "``oq#)>+", // 6:graph?
+/* 6 */  "`\\p!\"^?*",
+/* 7 */  "`_r`c$vg",
+/* 8 */  "`````=``"
 ];
 
 var gr_row = 5;
 var gr_col = 6;
 
 function sim_key(ch, down) {
-    var row = -1, bit;
+    var row = -1, bit, shifted = 0;
 
     for (var i = 0; i < 9 && row == -1; ++i)
         for (bit = 0; bit < 8; ++bit)
@@ -160,10 +172,21 @@ function sim_key(ch, down) {
                 break;
             }
 
-    if (down)
-        keym[row] |= 1 << bit;
-    else
-        keym[row] &= ~(1 << bit);
+    for (var i = 0; i < 9 && row == -1; ++i)
+        for (bit = 0; bit < 8; ++bit)
+            if (kbd_translation_shifted[i][7-bit] == ch) {
+                row = i;
+                shifted = 1;
+                break;
+            }
+
+    if (row != -1) {
+        if (down)
+            keym[row] |= 1 << bit, keym[0] |= shifted << 4;
+        else
+            keym[row] &= ~(1 << bit), keym[0] &= ~(shifted << 4);
+    } else if (down)
+        console.log("Sorry, couldn't find translation for "+ch);
 }
 
 function registerKey(evt, down) {
@@ -269,7 +292,7 @@ function frame() {
     /* dumpKeys(); */
     //flashFrame = (flashFrame + 1) & 0x1f;
 
-    paintScreen();
+    //paintScreen();
     z80_interrupt();
 }
 
@@ -277,8 +300,6 @@ function run() {
 
     // if (!running) return;
     frame();
-
-
 
     setTimeout(run, 20);
 }
@@ -297,6 +318,7 @@ function readbyte_internal(addr) {
 }
 function readport(port) {
     port &= 255;
+
     switch (port) {
     case 0:
         /* KBD */
@@ -306,12 +328,16 @@ function readport(port) {
         /* Status port on the UART */
         return 0;
     default:
+        console.log("readport "+port);
         return 0;
     }
 }
 
 function writeport(port, value) {
     port &= 255;
+
+    if (port != 0 || (value & ~3) != 0)
+        console.log("writeport "+port+","+value);
 
     if (port == 0) {
         /* KBD */
@@ -327,11 +353,13 @@ function writeport(port, value) {
         }
     }
 }
+
 function writebyte(addr, val) {
     return writebyte_internal(addr, val)
 }
+
 function writebyte_internal(addr, val) {
-    if (addr < 0x800)
+    if (addr < 0x800 || 0xE000 <= addr)
         return;
 
     var col = addr & 63;
@@ -346,7 +374,6 @@ function writebyte_internal(addr, val) {
         memory[addr] = val;
 }
 
-var times = 0;
 function drawScreenByte(addr, val) {
     var x = (addr & 63) - 10;
     var y = ((addr >> 6) + 1) & 15;

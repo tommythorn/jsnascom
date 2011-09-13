@@ -1,8 +1,19 @@
-- fix input handling to not assume a raw keyboard and thus allow input of all chars
-- swap case on input field
-- write protect the basic ROM
+- DONE fix input handling to not assume a raw keyboard and thus allow input of all chars
+- Maybe pause z80 while in the input field?
+- DONE swap case on input field
+- DONE write protect the basic ROM
 - support loading nas files
 - support loading and saving tapes
 - snapshot state
 - manage multiple snapshots
 - fix NMI handling and single stepping
+- improve performance, especially on iPhone
+  - DONE stop updating the whole screen all the time
+  - try Typed arrays
+  - try inlining memory accesses
+  - try periodic screen refresh instead of inline
+  - thrawl around for hints for JavaScript on iPhone
+  - tune the T-state stuff.
+  - recognize the idle loop and sleep instead of spinning
+  - JIT it!
+- Reorganise and clean up the code
