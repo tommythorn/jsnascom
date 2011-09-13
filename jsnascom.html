@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <!--
+<html manifest="cache-manifest.manifest">
         JSNascom: A Nascom 2 emulator in JavaScript
         Copyright (C) 2011 Tommy Thorn
 
@@ -27,20 +28,24 @@
         Matthew Westcott, 14 Daisy Hill Drive, Adlington, Chorley, Lancs PR6 9NE UNITED KINGDOM
 -->
 <html>
-     <head>
-		<title>JavaScript Nascom 2 Emulator</title>
+<head>
+<title>JavaScript Nascom 2 Emulator</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width; height=device-height; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<link rel="apple-touch-icon-precomposed" href="images/appIcon.png">
+<link rel="apple-touch-startup-image" href="images/default.png">
+<style> body {margin: 0px ;} </style>
+<script type="text/javascript" src="z80/z80_full.js"></script>
+<script type="text/javascript" src="z80/z80_ops_full.js"></script>
+<script type="text/javascript" src="nascom.js"></script>
+</head>
 
-                <script type="text/javascript" src="z80/z80_full.js"></script>
-                <script type="text/javascript" src="z80/z80_ops_full.js"></script>
-                <script type="text/javascript" src="nascom.js"></script>
-
-      <style> body {margin: 0px ;} </style>
-    </head>
-
-    <body onload="nascom_init();">
-      <h1>Nascom 2</h1>
-    &nbsp;<canvas id="screen" width="384" height="256"></canvas><br>
-     <img src="keyboard.png"/>
-
-    </body>
+<body onload="nascom_init();">
+<!-- <h1>Nascom 2</h1> -->
+<canvas id="screen" width="384" height="256"></canvas><br>
+<input id=t1 type=text   value="" size=20 onchange="form_enter();">
+<input name=b1 type=submit value="Enter!"onclick="form_enter();">
+</body>
 </html>

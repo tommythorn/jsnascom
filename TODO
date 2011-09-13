@@ -1,0 +1,8 @@
+- fix input handling to not assume a raw keyboard and thus allow input of all chars
+- swap case on input field
+- write protect the basic ROM
+- support loading nas files
+- support loading and saving tapes
+- snapshot state
+- manage multiple snapshots
+- fix NMI handling and single stepping
