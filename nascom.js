@@ -87,6 +87,7 @@ function form_enter() {
 
     var l = "";
     // Swap case (clearly I'm a JS n00b)
+    /*
     for (var i = 0; i < replay_line.length; ++i) {
         if ('A' <= replay_line[i] && replay_line[i] <= 'Z')
             l += replay_line[i].toLowerCase();
@@ -94,18 +95,30 @@ function form_enter() {
             l += replay_line[i].toUpperCase();
     }
     replay_line = l;
+    */
 
     t1.value = "";
+}
+
+var nmi_pending = false;
+
+function click(evt) {
+    console.log("'click'");
+//    event_next_event = 0;
+//    nmi_pending = true;
 }
 
 function nascom_init() {
     var i;
 
-    /*
-    document.onkeydown  = keyDown;
-    document.onkeyup    = keyUp;
-    document.onkeypress = keyPress;
-    */
+    if (0 /* not on iPhone */) {
+        document.onkeydown  = keyDown;
+        document.onkeyup    = keyUp;
+        document.onkeypress = keyPress;
+    }
+
+    document.addEventListener('click', click, false);
+
 //    document.addEventListener('touchstart', touchStart, false);
 //    document.addEventListener('touchend', touchEnd, false);
 
@@ -136,26 +149,26 @@ function nascom_init() {
 var kbd_translation = [
 // 7:NC for all rows
 /* 0 */  "````````", // 6:NC 5:Ctrl 4:Shift 3:Ctrl 2:NC 1:NC 0:NC
-/* 1 */  "``TXF5BH",
-/* 2 */  "``YZD6NJ",
-/* 3 */  "``USE7MK",
-/* 4 */  "``IAW8,L",
-/* 5 */  "``OQ39.;", // 6:Graph?
-/* 6 */  "`[P120/:",
-/* 7 */  "`]R C4VG",
+/* 1 */  "``txf5bh",
+/* 2 */  "``yzd6nj",
+/* 3 */  "``use7mk",
+/* 4 */  "``iaw8,l",
+/* 5 */  "``oq39.;", // 6:Graph?
+/* 6 */  "`[p120/:",
+/* 7 */  "`]r c4vg",
 /* 8 */  "`\r```-\n\007"
 ];
 
 var kbd_translation_shifted = [
 // 7:NC for all rows
 /* 0 */  "``@`````", // 6:NC 5:Ctrl 4:Shift 3:Ctrl 2:NC 1:NC 0:NC
-/* 1 */  "``txf%bh",
-/* 2 */  "``yzd&nj",
-/* 3 */  "``use'mk",
-/* 4 */  "``iaw(,l",
-/* 5 */  "``oq#)>+", // 6:graph?
-/* 6 */  "`\\p!\"^?*",
-/* 7 */  "`_r`c$vg",
+/* 1 */  "``TXF%BH",
+/* 2 */  "``YZD&NJ",
+/* 3 */  "``USE'MK",
+/* 4 */  "``IAW(,L",
+/* 5 */  "``OQ#)>+", // 6:graph?
+/* 6 */  "`\\P!\"^?*",
+/* 7 */  "`_R`C$VG",
 /* 8 */  "`````=``"
 ];
 
@@ -181,6 +194,7 @@ function sim_key(ch, down) {
             }
 
     if (row != -1) {
+        //console.log("key "+(down?"down":"up")+" at row "+row+" col "+bit);
         if (down)
             keym[row] |= 1 << bit, keym[0] |= shifted << 4;
         else
@@ -202,7 +216,7 @@ function registerKey(evt, down) {
 
     switch (keyNum) {
     case 17: row = 0, bit = 3; break; // control (5 works too)
-    case 16: row = 0, bit = 4; break; // shift
+    case 16: row = 0, bit = 4; break; // shift  XXX turned off as it interferes
 //  case 220:row = 0, bit = 5; break; // control (@, guess)
     case 38: row = 1, bit = 6; break; // up arrow
     case 37: row = 2, bit = 6; break; // left arrow
@@ -222,20 +236,19 @@ function registerKey(evt, down) {
     case 222: ch = ':'; break; // Not ideal, pressing ' but getting :
     }
 
-/*
+    if (0)
     console.log("registerKey " + keyNum + "/" + ch + "/" +
                 evt.charCode + "/" +
                 String.fromCharCode(evt.charCode) + "/" +
                 event.char + "/" +
                 evt.keyIdentifier
                );
-*/
 
     if (row == -1) {
         if (ch == undefined)
-            ch = String.fromCharCode(keyNum).toUpperCase();
+            ch = String.fromCharCode(keyNum)/*.toUpperCase()*/;
 
-        sim_key(ch);
+        sim_key(ch, down);
     } else if (down)
         keym[row] |= 1 << bit;
     else
@@ -243,7 +256,6 @@ function registerKey(evt, down) {
 }
 
 function keyDown(evt) {
-//  console.log("keyDown "+evt);
     registerKey(evt, true)
     if (!evt.metaKey) return false;
 }
@@ -288,6 +300,12 @@ function frame() {
     tstates = 0;
 
     z80_do_opcodes();
+
+    if (nmi_pending) {
+        nmi_pending = false;
+        z80_nmi();
+    }
+
     /* dumpScreen(); */
     /* dumpKeys(); */
     //flashFrame = (flashFrame + 1) & 0x1f;
@@ -342,6 +360,7 @@ function writeport(port, value) {
     if (port == 0) {
         /* KBD */
         var down_trans = port0 & ~value;
+        var up_trans = ~port0 & value;
         port0 = value;
 
         if (1 & down_trans)
@@ -350,6 +369,32 @@ function writeport(port, value) {
             keyp = 0;
             if (replay_active)
                 advance_replay();
+        }
+        // bit 2 and 5 also go to the keyboard but does what?
+        if (8 & up_trans) {
+            console.log("Single-step triggered");
+            /* The logic implemented by IC14 & IC15
+               appears to delay the NMI by counting
+               110
+               010
+               100
+               000
+               111 -> NMI
+               so four cycles? (experiments suggest using 25)
+
+               20 1000
+               22 1000
+               23 1000
+               24 1000
+               25 1001
+               30 1002
+               40 1004
+
+               This should probably not use tstates, but this will
+               work for NAS-SYS 3
+            */
+            nmi_pending = true;
+            event_next_event = tstates + 25;
         }
     }
 }
@@ -374,6 +419,7 @@ function writebyte_internal(addr, val) {
         memory[addr] = val;
 }
 
+var char_height = 15; // PAL=12 , NTSC = 14 ?? (I think that's should be 13/15)
 function drawScreenByte(addr, val) {
     var x = (addr & 63) - 10;
     var y = ((addr >> 6) + 1) & 15;
@@ -385,9 +431,9 @@ function drawScreenByte(addr, val) {
         val != undefined) {
         ctx.drawImage(nasfont,
                   0, 16*val,	// sx,sy
-                  8, 16,	// sWidth, sHeight
-                  x*8,y*16,	// dx,dy
-                  8, 16);	// dWidth, dHeight
+                  8, char_height,	// sWidth, sHeight
+                  x*8,y*char_height,	// dx,dy
+                  8, char_height);	// dWidth, dHeight
     } else
         console.log("Oh no");
 }

@@ -1,4 +1,5 @@
-- DONE fix input handling to not assume a raw keyboard and thus allow input of all chars
+- DONE fix input handling to not assume a raw keyboard and
+       thus allow input of all chars
 - Maybe pause z80 while in the input field?
 - DONE swap case on input field
 - DONE write protect the basic ROM
@@ -6,14 +7,21 @@
 - support loading and saving tapes
 - snapshot state
 - manage multiple snapshots
-- fix NMI handling and single stepping
+- button for external NMI
+- DONE fix single stepping
 - improve performance, especially on iPhone
   - DONE stop updating the whole screen all the time
-  - try Typed arrays
-  - try inlining memory accesses
-  - try periodic screen refresh instead of inline
+  - use Typed arrays
+  - use inlining memory accesses (hmm, protecting ROMs is tricky)
+  - use periodic screen refresh instead of inline
+  - exploit typed arrays to scan for changes four byte at a time
   - thrawl around for hints for JavaScript on iPhone
   - tune the T-state stuff.
   - recognize the idle loop and sleep instead of spinning
-  - JIT it!
+  - JIT it (great excuse for playing with TraceTree jitting)
 - Reorganise and clean up the code
+- figure out with port0 b2 and b5 does (goes to keyboard)
+- add serial interface to files
+- add support for importing sound files
+- add touch support for arrow keys (configurable) so games are
+  playable on the iPhone
