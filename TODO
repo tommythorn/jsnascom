@@ -1,3 +1,7 @@
+- save and restore state
+- Do terminal input like jslinux (use a small auto selected field, but keystrokes
+  are immediately reflected in the terminal).
+- Use the serial port for pending_input
 - DONE fix input handling to not assume a raw keyboard and
        thus allow input of all chars
 - Maybe pause z80 while in the input field?
@@ -25,3 +29,11 @@
 - add support for importing sound files
 - add touch support for arrow keys (configurable) so games are
   playable on the iPhone
+
+
+       Test    T0 4000          FOR I=0 TO 2999:LET J=SIN(I):NEXT I
+Perf
+Mac Safari         46s  1               47s
+Mac Chrome         50s  1.09            49s
+Mac Firefox        64s  1.39            63s
+iphone            221s  4.80          ~137s
