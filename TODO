@@ -1,4 +1,4 @@
-- save and restore state
+- DONE: save and restore state (could certainly be improved though)
 - Do terminal input like jslinux (use a small auto selected field, but keystrokes
   are immediately reflected in the terminal).
 - Use the serial port for pending_input

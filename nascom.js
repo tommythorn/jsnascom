@@ -112,8 +112,18 @@ function click(evt) {
 //    nmi_pending = true;
 }
 
+function nascom_unload() {
+    var serialized = "";
+    for (i = 0; i < 16384; ++i)
+        serialized += phys_mem32[i] + ",";
+    localStorage.setItem("memory", serialized);
+}
+
 function nascom_init() {
     var i;
+
+    if (!'localStorage' in window || window['localStorage'] === null)
+        alert("Need a less broken browser");
 
     if (0 /* not on iPhone */) {
         document.onkeydown  = keyDown;
@@ -137,16 +147,24 @@ function nascom_init() {
     phys_mem16 = new Uint16Array(this.phys_mem, 0, ea / 2);
     phys_mem32 = new Int32Array(this.phys_mem, 0, ea / 4);
 
+    // Memory
+    for (i = 0x800; i < 0xE000; i++)
+        memory[i] = 0;
+
+    var val = localStorage.getItem("memory");
+
+    if (val !== null) {
+        var aval = val.split(",");
+        for (i = 0; i < 16384; ++i)
+            phys_mem32[i] = parseInt(aval[i]);
+    }
+
     // NASSYS-3
     for (i = 0; i < 0x800; i++)
         memory[i] = nassys3.charCodeAt(i);
 
-    // Memory
-    for (; i < 0xE000; i++)
-        memory[i] = 0;
-
     // ROM Basic
-    for (; i < 0x10000; i++)
+    for (i = 0xE000; i < 0x10000; i++)
         memory[i] = basic.charCodeAt(i - 0xE000);
 
     canvas = document.getElementById('screen');
@@ -305,8 +323,11 @@ function touchEnd(evt) {
     keym[touch_row] &= ~(1 << touch_col);
 }
 
+var paintCountdown = 0;
+
 function frame() {
     event_next_event = 69888;
+    event_next_event = 129888;
     tstates = 0;
 
     z80_do_opcodes();
@@ -320,7 +341,11 @@ function frame() {
     /* dumpKeys(); */
     //flashFrame = (flashFrame + 1) & 0x1f;
 
-    //paintScreen();
+    if (paintCountdown-- == 0) {
+        paintScreen();
+        paintCountdown = 20;
+    }
+
     z80_interrupt();
 }
 
