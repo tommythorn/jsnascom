@@ -40,7 +40,11 @@
 
 */
 
-var memory = []; // XXX use typed arrays instead
+var phys_mem;
+var phys_mem8;
+var phys_mem16;
+var phys_mem32;
+
 var canvas;
 var ctx;
 var imageData;
@@ -127,17 +131,23 @@ function nascom_init() {
 
     z80_init();
 
+    var ea = 64 * 1024;
+    phys_mem = new ArrayBuffer(ea);
+    phys_mem8 = new Uint8Array(this.phys_mem, 0, ea);
+    phys_mem16 = new Uint16Array(this.phys_mem, 0, ea / 2);
+    phys_mem32 = new Int32Array(this.phys_mem, 0, ea / 4);
+
     // NASSYS-3
     for (i = 0; i < 0x800; i++)
-        memory[i] = nassys3.charCodeAt(i);
+        phys_mem8[i] = nassys3.charCodeAt(i);
 
     // Memory
     for (; i < 0xE000; i++)
-        memory[i] = 0;
+        phys_mem8[i] = 0;
 
     // ROM Basic
     for (; i < 0x10000; i++)
-        memory[i] = basic.charCodeAt(i - 0xE000);
+        phys_mem8[i] = basic.charCodeAt(i - 0xE000);
 
     canvas = document.getElementById('screen');
     ctx = canvas.getContext('2d');
@@ -332,7 +342,7 @@ function readbyte(addr) {
     return readbyte_internal(addr);
 }
 function readbyte_internal(addr) {
-    return memory[addr];
+    return phys_mem8[addr];
 }
 function readport(port) {
     port &= 255;
@@ -411,12 +421,12 @@ function writebyte_internal(addr, val) {
 
     if (addr < 0xC00 && 10 <= col && col < 58) {
         // Visible Screen write
-        var oldByte = memory[addr];
-        memory[addr] = val;
+        var oldByte = phys_mem8[addr];
+        phys_mem8[addr] = val;
         if (val != oldByte)
             drawScreenByte(addr, val);
     } else
-        memory[addr] = val;
+        phys_mem8[addr] = val;
 }
 
 var char_height = 15; // PAL=12 , NTSC = 14 ?? (I think that's should be 13/15)
@@ -442,6 +452,6 @@ function paintScreen() {
     for (var addr = 0x800; addr < 0xC00; ++addr) {
         col = addr & 63;
         if (10 <= col && col < 58)
-            drawScreenByte(addr, memory[addr]);
+            drawScreenByte(addr, phys_mem8[addr]);
     }
 }
