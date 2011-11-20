@@ -31,21 +31,30 @@
 <head>
 <title>JavaScript Nascom 2 Emulator</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width; height=device-height; initial-scale=0.5; maximum-scale=1.0; user-scalable=0;"/>
+<meta name="viewport" content="width=device-width;
+        height=device-height; initial-scale=0.5; maximum-scale=1.0;
+        user-scalable=0/>
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <link rel="apple-touch-icon-precomposed" href="images/appIcon.png">
 <link rel="apple-touch-startup-image" href="images/default.png">
 <style> body {margin: 0px ;} </style>
+<script type="text/javascript" src="rom_font.js"></script>
+<script type="text/javascript" src="rom_monitor.js"></script>
+<script type="text/javascript" src="rom_basic.js"></script>
 <script type="text/javascript" src="z80/z80_full.js"></script>
 <script type="text/javascript" src="z80/z80_ops_full.js"></script>
 <script type="text/javascript" src="nascom.js"></script>
 </head>
 
 <body onload="nascom_init();" onUnload="nascom_unload();">
+<table border="0">
+<tr valign="top"><td>
+
 <!-- <h1>Nascom 2</h1> -->
-<input id=t1 value="" size=5 onchange="form_enter();"><br>
 <canvas id="screen" width="384" height="240"></canvas>
-<!-- <input name=b1 type=submit value="Enter!"onclick="form_enter();"> -->
+<td>
+<input autocapitalize="off" id=t1 value="" size=6 onchange="form_enter();"><br>
+</table>
 </body>
 </html>

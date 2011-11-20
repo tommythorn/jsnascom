@@ -1,4 +1,26 @@
-- DONE: save and restore state (could certainly be improved though)
+- Plan what the final product should look like. One idea was to grab a
+  picture of my monitor and embed the framebuffer within along with
+  icons for stuff like loading and saving nas files as well as more
+  advanced/primitive operations like "replay from tape" and "record to
+  tape".
+
+    This picture unfortunately doesn't quite cut it:
+    http://nascomhomepage.com/pics/nascom2-ensemble-half.jpg
+
+  Storyboard what the UI would feel like and finally mock it up
+  without the distraction of all the legacy Nascom/Spectrum code.
+
+  It's probably worth making a special case for Safari on iOS to
+  account for both limitations as well as unique capabilities.  The
+  latter includes oritation support and touch/gestures.
+
+  iOS presents a major challenge wrt keyboard handling. Clearly for
+  games, providing direct (programmable?) one-touch support for
+  certain keys (notably cursor keys) is a requirement.
+
+
+- support loading nas files
+- DONE save and restore state (could certainly be improved though)
 - Do terminal input like jslinux (use a small auto selected field, but keystrokes
   are immediately reflected in the terminal).
 - Use the serial port for pending_input
@@ -7,9 +29,7 @@
 - Maybe pause z80 while in the input field?
 - DONE swap case on input field
 - DONE write protect the basic ROM
-- support loading nas files
 - support loading and saving tapes
-- snapshot state
 - manage multiple snapshots
 - button for external NMI
 - DONE fix single stepping
