@@ -2,7 +2,7 @@
         JSNascom: A Nascom 2 emulator in JavaScript
         Copyright (C) 2011 Tommy Thorn
 
-        Contact details: <tommy . thorn at gmail dot com>
+        Contact details: <nascomhomepage@thorn.ws>
 
         partly based on JSSpeccy: Spectrum architecture implementation
         for JSSpeccy, a ZX Spectrum emulator in Javascript
@@ -27,16 +27,15 @@
     - an UART,
     - a bitmapped keyboard,
     - memory:
-        0000 - 07ff  2 KB ROM monitor,
-        0800 - 0bff  1 KB screen memory,
-        0c00 - 0fff  1 KB workspace
-        1000 - dfff       memory
-        e000 - ffff  8 KB of MS Basic
+        0000 - 07ff  2 KiB ROM monitor,
+        0800 - 0bff  1 KiB screen memory,
+        0c00 - 0fff  1 KiB workspace
+        1000 - dfff 52 KiB memory
+        e000 - ffff  8 KiB of MS Basic
 
   With the Z80 emulator in place the first thing to get working is the
-  screen memory.  The "correct" way to simulate screen memory is to
-  trap upon writes, but that would be slow.  We do it any just to get
-  started.
+  screen memory.  The simplest way to simulate screen memory is to
+  trap upon writes.
 
 */
 
@@ -50,12 +49,6 @@ var ctx;
 var imageData;
 var imageDataData;
 var keyStates = [];
-var imageDataShadow = []; /* clone of imageDataData; - used to skip writing pixels to canvas if there's no change */
-
-var hasImageData;
-var needDrawImage = (navigator.userAgent.indexOf('Firefox/2') != -1);
-
-
 
 var keyp = 0;
 var port0 = 0;
@@ -65,6 +58,9 @@ var replay_active = true;
 var replay_line = " HELLO THERE\n"
 var replay_p   = 0;
 var replay_down = true;
+
+var serial_input = "";
+var serial_input_p = 0;
 
 function advance_replay() {
     sim_key(replay_line[replay_p], replay_down);
@@ -84,29 +80,10 @@ function form_enter() {
 
     var t1 = document.getElementById('t1');
     replay_line = t1.value + "\n";
-
-    var l = "";
-    // Swap case (clearly I'm a JS n00b)
-    /*
-    for (var i = 0; i < replay_line.length; ++i) {
-        if ('A' <= replay_line[i] && replay_line[i] <= 'Z')
-            l += replay_line[i].toLowerCase();
-        else
-            l += replay_line[i].toUpperCase();
-    }
-    replay_line = l;
-    */
-
     t1.value = "";
 }
 
 var nmi_pending = false;
-
-function click(evt) {
-    console.log("'click'");
-//    event_next_event = 0;
-//    nmi_pending = true;
-}
 
 function nascom_unload() {
     var serialized = "";
@@ -115,23 +92,87 @@ function nascom_unload() {
     localStorage.setItem("memory", serialized);
 }
 
+function hexdigitValue(ch) {
+    if (48 <= ch && ch < 58)
+        return ch - 48;
+    else if (65 <= ch && ch <= 70)
+        return ch - 55;
+    else if (97 <= ch && ch <= 102)
+        return ch - 87;
+    else
+        return -1;
+}
+
+function isxdigit(ch) { return hexdigitValue(ch) != -1; }
+
 function nascom_init() {
     var i;
 
     if (!'localStorage' in window || window['localStorage'] === null)
-        alert("Need a less broken browser");
+        alert("Need a less broken browser that supports localStorage");
 
-    if (1 /* not on iPhone */) {
+    // Check for the various File API support.
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+        // Great success! All the File APIs are supported.
+    } else {
+        alert('The File APIs are not fully supported in this browser.');
+    }
+
+
+    if (/* on iPhone */ 0)
+        document.getElementById("body").ontouchmove="BlockMove(event);"
+    else {
         document.onkeydown  = keyDown;
         document.onkeyup    = keyUp;
         document.onkeypress = keyPress;
     }
 
-    document.addEventListener('click', click, false);
-
 //    document.addEventListener('touchstart', touchStart, false);
 //    document.addEventListener('touchend', touchEnd, false);
 
+    document.getElementById("serial_input").onchange = function() {
+        var reader = new FileReader();
+        reader.onload = (function(theFile) {
+            return function(contents) {
+                serial_input = contents.target.result;
+                serial_input_p = 0;
+            };
+        })(this.files[0]);
+
+        // Read in the image file as a data URL.
+        reader.readAsBinaryString(this.files[0]);
+    }
+
+    document.getElementById('load_nas').onchange = function() {
+      var reader = new FileReader();
+      reader.onload = (function(theFile) {
+        return function(contents) {
+            var s = contents.target.result;
+            var p = 0;
+
+            // Expect lines like this:
+            // nnnXXXXnXXnXXnXXnXXnXXnXXnXXnXXnXXnnnnn where X is a
+            // hexidecimal digit and n is not.  Note, the last digit
+            // is a checksum, but we treat it like any other with no
+            // ill effect.
+
+            var a = 0;
+            while (p < s.length) {
+                while (p < s.length && !isxdigit(s.charCodeAt(p))) ++p;
+                var d, v;
+                for (v = d = 0; p < s.length && isxdigit(s.charCodeAt(p)); ++p, ++d)
+                    v = 16*v + hexdigitValue(s.charCodeAt(p));
+                if (d == 4)
+                    a = v;
+                else if (d == 2)
+                    memory[a++] = v;
+            }
+        };
+      })(this.files[0]);
+
+      // Read in the image file as a data URL.
+      reader.readAsBinaryString(this.files[0]);
+    }
 
     z80_init();
 
@@ -168,6 +209,7 @@ function nascom_init() {
 
     run();
 }
+
 
 var kbd_translation = [
 // 7:NC for all rows
@@ -378,9 +420,31 @@ function readport(port) {
         /* KBD */
         /* printf("[%d]", keyp); */
         return ~keym[keyp];
-    case 2:
-        /* Status port on the UART */
+
+    case 1:
+        if (serial_input_p < serial_input.length)
+            return serial_input.charCodeAt(serial_input_p++);
         return 0;
+
+    case 2:
+        /* Status port on the UART
+
+           #define UART_DATA_READY 128
+           #define UART_TBR_EMPTY   64
+           #define UART_F_ERROR      8
+           #define UART_P_ERROR      4
+           #define UART_O_ERROR      2
+
+           UART_TBR_EMPTY ==
+            (serial_input_available & tape_led ? UART_DATA_READY : 0);
+
+         */
+
+        if (serial_input.length == serial_input_p)
+            return 64;
+        else
+            return 192;
+
     default:
         console.log("readport "+port);
         return 0;
@@ -440,19 +504,26 @@ function writebyte(addr, val) {
 }
 
 function writebyte_internal(addr, val) {
-    if (addr < 0x800 || 0xE000 <= addr)
-        return;
+    /* Optimize for the common case */
+    if (0xC00 <= addr && addr < 0xE000) {
 
-    var col = addr & 63;
+        // General purpose memory
+        memory[addr] = val;
 
-    if (addr < 0xC00 && 10 <= col && col < 58) {
-        // Visible Screen write
-        var oldByte = memory[addr];
-        memory[addr] = val;
-        if (val != oldByte)
-            drawScreenByte(addr, val);
-    } else
-        memory[addr] = val;
+    } else if (0x800 <= addr && addr < 0xC00) {
+        // Framebuffer
+
+        if (((addr - 10) & 63) < 48) {
+
+            // Visible Screen write
+            var oldByte = memory[addr];
+            memory[addr] = val;
+
+            if (val != oldByte)
+                drawScreenByte(addr, val);
+        } else
+            memory[addr] = val;
+    }
 }
 
 var char_height = 15; // PAL=12 , NTSC = 14 ?? (I think that's should be 13/15)
@@ -471,7 +542,8 @@ function drawScreenByte(addr, val) {
                   x*8,y*char_height,    // dx,dy
                   8, char_height);      // dWidth, dHeight
     } else
-        console.log("Oh no");
+        console.log("Oh no, it would appear what drawScreenByte is called "
+                    + "before all of the necessary resources are defined");
 }
 
 function paintScreen() {

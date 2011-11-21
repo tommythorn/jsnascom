@@ -18,8 +18,8 @@
   games, providing direct (programmable?) one-touch support for
   certain keys (notably cursor keys) is a requirement.
 
-
-- support loading nas files
+- DONE support loading serial input from a file
+- DONE support loading nas files
 - DONE save and restore state (could certainly be improved though)
 - Do terminal input like jslinux (use a small auto selected field, but keystrokes
   are immediately reflected in the terminal).
@@ -44,16 +44,17 @@
   - recognize the idle loop and sleep instead of spinning
   - JIT it (great excuse for playing with TraceTree jitting)
 - Reorganise and clean up the code
-- figure out with port0 b2 and b5 does (goes to keyboard)
+- figure out what port0 b2 and b5 does (goes to keyboard)
 - add serial interface to files
 - add support for importing sound files
 - add touch support for arrow keys (configurable) so games are
   playable on the iPhone
-
+- recognize the busy loop and sleep for the simulated amount of time rather
+  than burning CPU cycles
 
        Test    T0 4000          FOR I=0 TO 2999:LET J=SIN(I):NEXT I
 Perf
-Mac Safari         46s  1               47s
+Mac Safari         46s  1               47s  (27s after speed fix)
 Mac Chrome         50s  1.09            49s
 Mac Firefox        64s  1.39            63s
 iphone            221s  4.80          ~137s
