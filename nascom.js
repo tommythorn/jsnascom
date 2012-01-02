@@ -52,10 +52,11 @@ var keyStates = [];
 
 var keyp = 0;
 var port0 = 0;
+var tape_led = 0;
 var keym = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-var replay_active = true;
-var replay_line = " HELLO THERE\n"
+var replay_active = false;
+var replay_line = ""
 var replay_p   = 0;
 var replay_down = true;
 
@@ -105,31 +106,43 @@ function hexdigitValue(ch) {
 
 function isxdigit(ch) { return hexdigitValue(ch) != -1; }
 
+var fileIOOk = false;
+
 function nascom_init() {
     var i;
 
     if (!'localStorage' in window || window['localStorage'] === null)
         alert("Need a less broken browser that supports localStorage");
 
+
+    if (!window.File) alert("No window.File support in this browser");
+    if (!window.FileReader) alert("No window.FileReader support in this browser");
+    if (!window.FileList) alert("No window.FileList support in this browser");
+    if (!window.Blob) alert("No window.Blob support in this browser");
+
     // Check for the various File API support.
     if (window.File && window.FileReader && window.FileList && window.Blob) {
         // Great success! All the File APIs are supported.
-    } else {
-        alert('The File APIs are not fully supported in this browser.');
+        fileIOOk = true;
     }
 
+    if (!window.BlobBuilder && window.WebKitBlobBuilder) {
+        console.log("Compat: Using WebKitBlobBuilder as BlobBuilder");
+        window.BlobBuilder = window.WebKitBlobBuilder;
+    }
 
     if (/* on iPhone */ 0)
-        document.getElementById("body").ontouchmove="BlockMove(event);"
+        document.getElementById("body").ontouchmove = "BlockMove(event);"
     else {
         document.onkeydown  = keyDown;
         document.onkeyup    = keyUp;
         document.onkeypress = keyPress;
     }
 
-//    document.addEventListener('touchstart', touchStart, false);
-//    document.addEventListener('touchend', touchEnd, false);
+//  document.addEventListener('touchstart', touchStart, false);
+//  document.addEventListener('touchend', touchEnd, false);
 
+    if (fileIOOk)
     document.getElementById("serial_input").onchange = function() {
         var reader = new FileReader();
         reader.onload = (function(theFile) {
@@ -143,6 +156,7 @@ function nascom_init() {
         reader.readAsBinaryString(this.files[0]);
     }
 
+    if (fileIOOk)
     document.getElementById('load_nas').onchange = function() {
       var reader = new FileReader();
       reader.onload = (function(theFile) {
@@ -174,11 +188,29 @@ function nascom_init() {
       reader.readAsBinaryString(this.files[0]);
     }
 
+    /* This only works on Chrome
+
+       var serialOutputBlob = new BlobBuilder();
+       serialOutputBlob.append("Lorem ipsum");
+    //var fileSaver = window.saveAs(serialOutputBlob.getBlob(), "test_file");
+    //fileSaver.onwriteend = (function (evt) { alert("done"); });
+
+    var blob = serialOutputBlob.getBlob("application/octet-stream");
+    var saveas = document.createElement("iframe");
+//  saveas.style.display = "none";
+//  saveas.src = window.createBlobURL(blob);
+
+    if (window.createObjectURL)
+        saveas.src = window.webkitURL.createObjectURL(blob);
+    else
+        saveas.src = window.createObjectURL(blob);
+    */
+
     z80_init();
 
     var ea = 64 * 1024;
-    phys_mem = new ArrayBuffer(ea);
-    memory = new Uint8Array(this.phys_mem, 0, ea);
+    phys_mem   = new ArrayBuffer(ea);
+    memory     = new Uint8Array(this.phys_mem, 0, ea);
     phys_mem16 = new Uint16Array(this.phys_mem, 0, ea / 2);
     phys_mem32 = new Int32Array(this.phys_mem, 0, ea / 4);
 
@@ -275,7 +307,7 @@ function sim_key(ch, down) {
 }
 
 function registerKey(evt, down) {
-    var keyNum = evt.keyCode;
+    var charCode = evt.which ? evt.which : event.keyCode;
     var ch;
     var row = -1, bit, i;
 
@@ -283,9 +315,25 @@ function registerKey(evt, down) {
     /* Sigh, keyboard handing in JavaScript is a bloddy mess this is
        based on
        http://www.cambiaresearch.com/c4/702b8cd1-e5b0-42e6-83ac-25f0306e3e25/javascript-char-codes-key-codes.aspx
-       and has only so far been tested on Mac with Chrome. */
+       and has only so far been tested on Mac with Chrome.
 
-    switch (keyNum) {
+
+
+ function displayKeyCode(evt)
+ {
+	var textBox = getObject('txtChar');
+	 var charCode = (evt.which) ? evt.which : event.keyCode
+	 textBox.value = String.fromCharCode(charCode);
+	 if (charCode == 8) textBox.value = "backspace"; //  backspace
+	 if (charCode == 9) textBox.value = "tab"; //  tab
+	 if (charCode == 13) textBox.value = "enter"; //  enter
+	 if (charCode == 16) textBox.value = "shift"; //  shift
+	 if (charCode == 17) textBox.value = "ctrl"; //  ctrl
+	 if (charCode == 18) textBox.value = "alt"; //  alt
+
+ */
+
+    switch (charCode) {
     case 17: row = 0, bit = 3; break; // control (5 works too)
     case 16: row = 0, bit = 4; break; // shift
 //  case 220:row = 0, bit = 5; break; // control (@, guess)
@@ -306,17 +354,11 @@ function registerKey(evt, down) {
     case 220: ch = '\r'; break;
     case 221: ch = ']'; break;
     case 222: ch = ':'; break; // Not ideal, pressing ' but getting :
-    default:
-        console.log("registerKey " + keyNum + "/" + ch + "/" +
-                    evt.charCode + "/" +
-                    String.fromCharCode(evt.charCode) + "/" +
-                    event.char + "/" +
-                    evt.keyIdentifier);
     }
 
     if (row == -1) {
         if (ch == undefined)
-            ch = String.fromCharCode(keyNum)/*.toUpperCase()*/;
+            ch = String.fromCharCode(charCode)/*.toUpperCase()*/;
 
         sim_key(ch, down);
     } else if (down)
@@ -434,13 +476,9 @@ function readport(port) {
            #define UART_F_ERROR      8
            #define UART_P_ERROR      4
            #define UART_O_ERROR      2
-
-           UART_TBR_EMPTY ==
-            (serial_input_available & tape_led ? UART_DATA_READY : 0);
-
          */
 
-        if (serial_input.length == serial_input_p)
+        if (serial_input.length == serial_input_p || !tape_led)
             return 64;
         else
             return 192;
@@ -454,7 +492,7 @@ function readport(port) {
 function writeport(port, value) {
     port &= 255;
 
-    if (port != 0 || (value & ~3) != 0)
+    if (port != 0 || (value & ~31) != 0)
         console.log("writeport "+port+","+value);
 
     if (port == 0) {
@@ -496,6 +534,12 @@ function writeport(port, value) {
             nmi_pending = true;
             event_next_event = tstates + 25;
         }
+
+        tape_led = (value >> 4) & 1;
+    }
+
+    if (port == 1) {
+        console.log("serial out " + value);
     }
 }
 

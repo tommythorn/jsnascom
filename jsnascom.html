@@ -58,38 +58,32 @@ body {
  margin: 0px ;
 }
 </style>
-
-<p>&nbsp;<p>
-
- <script>
+<script>
 // To be called when there's a move event on the body itself:
 function BlockMove(event) {
  // Tell Safari not to move the window.
  event.preventDefault() ;
 }
- </script>
-
-
+</script>
 <script type="text/javascript" src="rom_font.js"></script>
 <script type="text/javascript" src="rom_monitor.js"></script>
 <script type="text/javascript" src="rom_basic.js"></script>
 <script type="text/javascript" src="z80/z80_full.js"></script>
 <script type="text/javascript" src="z80/z80_ops_full.js"></script>
 <script type="text/javascript" src="nascom.js"></script>
-
 </head>
-
 <body onload="nascom_init();" onUnload="nascom_unload();">
-
+<h1>Nascom 2 JavaScript emulator</h1>
 <table border="0">
   <tr valign="top"><td>
 
     <!-- <h1>Nascom 2</h1> -->
     <canvas id="screen" width="384" height="240"></canvas>
   <td>
-    KBD:  <input id="t1" autocapitalize="off" value="" size=6 onchange="form_enter();"><br>
-    NAS:  <input id="load_nas"     type="file"/><br>
-    TAPE: <input id="serial_input" type="file"/><br>
+    <!-- KBD:  <input id="t1" autocapitalize="off" value="" size=6 onchange="form_enter();"><br> -->
+    Load NAS:  <input id="load_nas"     type="file"/><br>
+    Load from tape: <input id="serial_input" type="file"/><br>
+    Save to tape: <input id="serial_output" type="file"/><br>
     Docs:<br>
     <a href="http://nascomhomepage.com/pdf/Nassys3.pdf">NAS-SYS 3</a>
     <a href="http://www.nascomhomepage.com/asm/Nap.txt">Nap</a>
