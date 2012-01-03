@@ -112,13 +112,14 @@ function nascom_init() {
     var i;
 
     if (!'localStorage' in window || window['localStorage'] === null)
-        alert("Need a less broken browser that supports localStorage");
+        alert("Your browser doesn't supports localStorage");
 
-
+/*
     if (!window.File) alert("No window.File support in this browser");
     if (!window.FileReader) alert("No window.FileReader support in this browser");
     if (!window.FileList) alert("No window.FileList support in this browser");
     if (!window.Blob) alert("No window.Blob support in this browser");
+*/
 
     // Check for the various File API support.
     if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -131,8 +132,14 @@ function nascom_init() {
         window.BlobBuilder = window.WebKitBlobBuilder;
     }
 
-    if (/* on iPhone */ 0)
-        document.getElementById("body").ontouchmove = "BlockMove(event);"
+    var IsiPhone = navigator.userAgent.indexOf("iPhone") != -1 ;
+    var IsiPod = navigator.userAgent.indexOf("iPod") != -1 ;
+    var IsiPad = navigator.userAgent.indexOf("iPad") != -1 ;
+
+    var IsiPhoneOS = IsiPhone || IsiPad || IsiPod ;
+
+    if (IsiPhoneOS)
+        console.log("navigator.userAgent is iOS");
     else {
         document.onkeydown  = keyDown;
         document.onkeyup    = keyUp;
@@ -188,23 +195,24 @@ function nascom_init() {
       reader.readAsBinaryString(this.files[0]);
     }
 
-    /* This only works on Chrome
+    /* This only works on Chrome */
 
-       var serialOutputBlob = new BlobBuilder();
-       serialOutputBlob.append("Lorem ipsum");
-    //var fileSaver = window.saveAs(serialOutputBlob.getBlob(), "test_file");
-    //fileSaver.onwriteend = (function (evt) { alert("done"); });
+    if (window.BlobBuilder) {
+        var serialOutputBlob = new window.BlobBuilder();
+        serialOutputBlob.append("Lorem ipsum");
+        //var fileSaver = window.saveAs(serialOutputBlob.getBlob(), "test_file");
+        //fileSaver.onwriteend = (function (evt) { alert("done"); });
 
-    var blob = serialOutputBlob.getBlob("application/octet-stream");
-    var saveas = document.createElement("iframe");
-//  saveas.style.display = "none";
-//  saveas.src = window.createBlobURL(blob);
+        var blob = serialOutputBlob.getBlob("application/octet-stream");
+        var saveas = document.createElement("iframe");
+        saveas.style.display = "none";
+        saveas.src = window.createBlobURL(blob);
 
-    if (window.createObjectURL)
-        saveas.src = window.webkitURL.createObjectURL(blob);
-    else
-        saveas.src = window.createObjectURL(blob);
-    */
+        if (window.createObjectURL)
+            saveas.src = window.webkitURL.createObjectURL(blob);
+        else
+            saveas.src = window.createObjectURL(blob);
+    }
 
     z80_init();
 
