@@ -149,8 +149,14 @@ function nascom_init() {
 //  document.addEventListener('touchstart', touchStart, false);
 //  document.addEventListener('touchend', touchEnd, false);
 
+    if (document.getElementById("reset"))
+        document.getElementById("reset").onclick = z80_reset;
+
+    if (document.getElementById("clear"))
+        document.getElementById("clear").onclick = nascom_clear;
+
     if (fileIOOk)
-    document.getElementById("serial_input").onchange = function() {
+        document.getElementById("serial_input").onchange = function() {
         var reader = new FileReader();
         reader.onload = (function(theFile) {
             return function(contents) {
@@ -197,7 +203,7 @@ function nascom_init() {
 
     /* This only works on Chrome */
 
-    if (window.BlobBuilder) {
+    if (0 && window.BlobBuilder) {
         var serialOutputBlob = new window.BlobBuilder();
         serialOutputBlob.append("Lorem ipsum");
         //var fileSaver = window.saveAs(serialOutputBlob.getBlob(), "test_file");
@@ -248,6 +254,12 @@ function nascom_init() {
     paintScreen();
 
     run();
+}
+
+function nascom_clear() {
+    for (i = 0x800; i < 0xE000; i++)
+        memory[i] = 0;
+    z80_reset();
 }
 
 
