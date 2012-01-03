@@ -30,7 +30,7 @@
         Lancs PR6 9NE UNITED KINGDOM -->
 
 <head>
-<title>JavaScript Nascom 2 Emulator</title>
+<title>JavaScript Nascom 2 Emulator Keys of Kraal</title>
 
 <!-- Tricks and help from
  http://matt.might.net/articles/how-to-native-iphone-ipad-apps-in-javascript/
@@ -73,8 +73,8 @@ function BlockMove(event) {
 <script type="text/javascript" src="repo.js"></script>
 <script type="text/javascript" src="nascom.js"></script>
 </head>
-<body onload="nascom_init();" onUnload="nascom_unload();">
-<h1>Nascom 2 JavaScript emulator</h1>
+<body onload="nascom_init(); start_keys();" onUnload="nascom_unload();">
+<h1>JavaScript Nascom 2 Emulator Keys of Kraal</h1>
 <table border="0">
   <tr valign="top"><td>
 
@@ -82,16 +82,7 @@ function BlockMove(event) {
     <canvas id="screen" width="384" height="240"></canvas>
   <td>
     <!-- KBD:  <input id="t1" autocapitalize="off" value="" size=6 onchange="form_enter();"><br> -->
-    <button id="reset">Reset</button><br>
-    <button id="clear">Clear memory and reset</button><br>
-    <button id="save">Save state</button><br>
-    <button id="keys">Start Keys of Kraal</button><br>
-    Load NAS:  <input id="load_nas"     type="file"/><br>
-    Load from tape: <input id="serial_input" type="file"/><br>
-    Save to tape: <input id="serial_output" type="file"/><br>
-    Docs:<br>
-    <a href="http://nascomhomepage.com/pdf/Nassys3.pdf">NAS-SYS 3</a>
-    <a href="http://www.nascomhomepage.com/asm/Nap.txt">Nap</a>
+    <button id="reset">Reset</button>
 </table>
 </body>
 </html>

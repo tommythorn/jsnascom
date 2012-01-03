@@ -53,6 +53,7 @@ var keyStates = [];
 var keyp = 0;
 var port0 = 0;
 var tape_led = 0;
+var led_off_str = "";
 var keym = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 var replay_active = false;
@@ -73,14 +74,16 @@ function advance_replay() {
     replay_down = !replay_down;
 }
 
-function form_enter() {
+function replay_kbd(str) {
     replay_active = true;
     replay_p = 0;
     replay_down = true;
-    replay_line = "(did not parse)\n";
+    replay_line = str;
+}
 
+function form_enter() {
     var t1 = document.getElementById('t1');
-    replay_line = t1.value + "\n";
+    replay_kbd(t1.value + "\n");
     t1.value = "";
 }
 
@@ -91,6 +94,7 @@ function nascom_unload() {
     for (i = 0; i < 16384; ++i)
         serialized += phys_mem32[i] + ",";
     localStorage.setItem("memory", serialized);
+    console.log("memory="+serialized);
 }
 
 function hexdigitValue(ch) {
@@ -107,6 +111,20 @@ function hexdigitValue(ch) {
 function isxdigit(ch) { return hexdigitValue(ch) != -1; }
 
 var fileIOOk = false;
+
+function start_keys() {
+    serial_input = repo['KEYS.CAS'];
+    serial_input_p = 0;
+    z80_reset();
+    replay_kbd("j\n\ncload\n");
+    led_off_str = "run\n";
+}
+
+function nascom_load(val) {
+    var aval = val.split(",");
+    for (i = 0; i < 16384; ++i)
+        phys_mem32[i] = parseInt(aval[i]);
+}
 
 function nascom_init() {
     var i;
@@ -154,6 +172,12 @@ function nascom_init() {
 
     if (document.getElementById("clear"))
         document.getElementById("clear").onclick = nascom_clear;
+
+    if (document.getElementById("save"))
+        document.getElementById("save").onclick = nascom_unload;
+
+    if (document.getElementById("keys"))
+        document.getElementById("keys").onclick = start_keys;
 
     if (fileIOOk)
         document.getElementById("serial_input").onchange = function() {
@@ -234,11 +258,8 @@ function nascom_init() {
 
     var val = localStorage.getItem("memory");
 
-    if (val !== null) {
-        var aval = val.split(",");
-        for (i = 0; i < 16384; ++i)
-            phys_mem32[i] = parseInt(aval[i]);
-    }
+    if (val !== null)
+        nascom_load(val);
 
     // NASSYS-3
     for (i = 0; i < 0x800; i++)
@@ -555,6 +576,8 @@ function writeport(port, value) {
             event_next_event = tstates + 25;
         }
 
+        if (tape_led && ((value >> 4) & 1) == 0)
+            replay_kbd(led_off_str);
         tape_led = (value >> 4) & 1;
     }
 
