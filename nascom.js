@@ -97,7 +97,7 @@ function nascom_unload() {
     for (i = 0; i < 16384; ++i)
         serialized += phys_mem32[i] + ",";
     localStorage.setItem("memory", serialized);
-    console.log("memory="+serialized);
+    //console.log("memory="+serialized);
 }
 
 function hexdigitValue(ch) {
@@ -175,7 +175,7 @@ function nascom_init() {
                     ch = 10;
 
                 replay_kbd(String.fromCharCode(ch));
-                console.log("keypress " + ch + "=" + replay_line);
+                //console.log("keypress " + ch + "=" + replay_line);
                 var t1 = document.getElementById('t1');
                 t1.value = "";
                 return true; };
@@ -413,7 +413,7 @@ function registerKey(evt, down) {
     case 37: row = 2, bit = 6; break; // left arrow
     case 40: row = 3, bit = 6; break; // down arrow
     case 39: row = 4, bit = 6; break; // right arrow
-    case 18: row = 5, bit = 6; break; // graph (guess)
+    case 18: row = 5, bit = 6; break; // graph
     case  8: row = 8, bit = 0; break; // backspace
     case 13: row = 8, bit = 1; break; // enter
     case 91: return; // Command/Apple
@@ -585,13 +585,13 @@ function writeport(port, value) {
             keyp = 0;
 
             if (replay_active == 1) {
-                console.log("go advance_replay");
+                //console.log("go advance_replay");
                 advance_replay();
             }
             else if (replay_active > 0) {
-                console.log("replay_active " + replay_active);
+                //console.log("replay_active " + replay_active);
                 replay_active = replay_active - 1;
-                console.log("replay_active' " + replay_active);
+                //console.log("replay_active' " + replay_active);
             }
         }
         // bit 2 and 5 also go to the keyboard but does what?
