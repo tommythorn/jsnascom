@@ -56,7 +56,8 @@ var tape_led = 0;
 var led_off_str = "";
 var keym = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-var replay_active = false;
+var replay_active = 0;
+var replay_active_go = 10;
 var replay_line = ""
 var replay_p   = 0;
 var replay_down = true;
@@ -65,26 +66,28 @@ var serial_input = "";
 var serial_input_p = 0;
 
 function advance_replay() {
+    replay_active = replay_active_go;
     sim_key(replay_line[replay_p], replay_down);
     if (replay_down == false) {
         ++replay_p;
         if (replay_line.length == replay_p)
-            replay_active = false;
+            replay_active = 0;
     }
     replay_down = !replay_down;
 }
 
 function replay_kbd(str) {
-    replay_active = true;
+    replay_active = replay_active_go;
     replay_p = 0;
     replay_down = true;
     replay_line = str;
 }
 
 function form_enter() {
+/*
     var t1 = document.getElementById('t1');
     replay_kbd(t1.value + "\n");
-    t1.value = "";
+    t1.value = ""; */
 }
 
 var nmi_pending = false;
@@ -156,9 +159,37 @@ function nascom_init() {
 
     var IsiPhoneOS = IsiPhone || IsiPad || IsiPod ;
 
-    if (IsiPhoneOS)
+    if (IsiPhoneOS) {
         console.log("navigator.userAgent is iOS");
+
+        var xx = document.getElementById("t1");
+
+        if (xx) {
+            //xx.onclick = start_keys;
+            //xx.onkeydown  = function (evt) { alert("keydown"+(evt.which?evt.which :evt.keyCode)); return false; };
+            //xx.onkeyup    = function (evt) { alert("keyup"+(evt.which?evt.which :evt.keyCode));   return false; };
+            xx.onkeypress    = function (evt) {
+                var ch = evt.which ? evt.which :evt.keyCode;
+
+                if (ch == 13)
+                    ch = 10;
+
+                replay_kbd(String.fromCharCode(ch));
+                console.log("keypress " + ch + "=" + replay_line);
+                var t1 = document.getElementById('t1');
+                t1.value = "";
+                return true; };
+        }
+        else {
+            alert("No t1 found?");
+        }
+    }
     else {
+        /* On the iPhone, the only way I have found to get keyboard
+         * events is by focusing an input field *and* using an
+         * external bluetooth keyboard. Even so, we do not appear to
+         * get modifier events.  More investigation needed, but it's
+         * clear that this needs more support. */
         document.onkeydown  = keyDown;
         document.onkeyup    = keyUp;
         document.onkeypress = keyPress;
@@ -410,17 +441,23 @@ function registerKey(evt, down) {
 
 function keyDown(evt) {
     registerKey(evt, true)
-    if (!evt.metaKey) return false;
+    if (!evt.metaKey)
+        return false;
+    return true;
 }
 
 function keyUp(evt) {
 //  console.log("keyDown "+evt);
     registerKey(evt, false);
-    if (!evt.metaKey) return false;
+    if (!evt.metaKey)
+        return false;
+    return true;
 }
 
 function keyPress(evt) {
-    if (!evt.metaKey) return false;
+    if (!evt.metaKey)
+        return false;
+    return true;
 }
 
 /*
@@ -546,8 +583,16 @@ function writeport(port, value) {
             keyp++;
         if (2 & down_trans) {
             keyp = 0;
-            if (replay_active)
+
+            if (replay_active == 1) {
+                console.log("go advance_replay");
                 advance_replay();
+            }
+            else if (replay_active > 0) {
+                console.log("replay_active " + replay_active);
+                replay_active = replay_active - 1;
+                console.log("replay_active' " + replay_active);
+            }
         }
         // bit 2 and 5 also go to the keyboard but does what?
         if (8 & up_trans) {
