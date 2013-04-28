@@ -378,33 +378,13 @@ function sim_key(ch, down) {
         console.log("Sorry, couldn't find translation for "+ch);
 }
 
-function registerKey(evt, down) {
-    var charCode = evt.which ? evt.which : event.keyCode;
-    var ch;
+function nascomKbdEvent(evt, down) {
+    nascomCharCode(evt.which ? evt.which : event.keyCode, down);
+}
+
+function nascomCharCode(charCode, down) {
     var row = -1, bit, i;
-
-
-    /* Sigh, keyboard handing in JavaScript is a bloddy mess this is
-       based on
-       http://www.cambiaresearch.com/c4/702b8cd1-e5b0-42e6-83ac-25f0306e3e25/javascript-char-codes-key-codes.aspx
-       and has only so far been tested on Mac with Chrome.
-
-
-
- function displayKeyCode(evt)
- {
-	var textBox = getObject('txtChar');
-	 var charCode = (evt.which) ? evt.which : event.keyCode
-	 textBox.value = String.fromCharCode(charCode);
-	 if (charCode == 8) textBox.value = "backspace"; //  backspace
-	 if (charCode == 9) textBox.value = "tab"; //  tab
-	 if (charCode == 13) textBox.value = "enter"; //  enter
-	 if (charCode == 16) textBox.value = "shift"; //  shift
-	 if (charCode == 17) textBox.value = "ctrl"; //  ctrl
-	 if (charCode == 18) textBox.value = "alt"; //  alt
-
- */
-
+    var ch;
     switch (charCode) {
     case 17: row = 0, bit = 3; break; // control (5 works too)
     case 16: row = 0, bit = 4; break; // shift
@@ -440,7 +420,7 @@ function registerKey(evt, down) {
 }
 
 function keyDown(evt) {
-    registerKey(evt, true)
+    nascomKbdEvent(evt, true)
     if (!evt.metaKey)
         return false;
     return true;
@@ -448,7 +428,7 @@ function keyDown(evt) {
 
 function keyUp(evt) {
 //  console.log("keyDown "+evt);
-    registerKey(evt, false);
+    nascomKbdEvent(evt, false);
     if (!evt.metaKey)
         return false;
     return true;
@@ -684,4 +664,31 @@ function paintScreen() {
         if (10 <= col && col < 58)
             drawScreenByte(addr, memory[addr]);
     }
+}
+
+function nasKeyDn(ch) {
+    sim_key(ch, true);
+}
+
+function nasEvtDn(evt) {
+    //console.log("nasEvtDn "+evt.target.textContent);
+    nasKeyDn(evt.target.textContent);
+}
+
+function nasCodeDn(charCode) {
+    //console.log("nasEvtDn "+evt.target.textContent);
+    nascomCharCode(charCode, true);
+}
+
+function nasKeyUp(ch) {
+    sim_key(ch, false);
+}
+function nasEvtUp(evt) {
+    //console.log("nasEvtUp "+evt.target.textContent);
+    nasKeyUp(evt.target.textContent);
+}
+
+function nasCodeUp(charCode) {
+    //console.log("nasEvtDn "+evt.target.textContent);
+    nascomCharCode(charCode, false);
 }

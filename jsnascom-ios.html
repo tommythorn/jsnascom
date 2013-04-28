@@ -36,15 +36,16 @@
 -->
 
 <!-- Prevent scaling -->
-<!--<meta name="viewport" content="user-scalable=no,
-width=device-width" /> -->
-<meta name="viewport" content="user-scalable=no,initial-scale=0.8333" /> -->
+<!-- <meta name="viewport" content="user-scalable=no, width=device-width" />-->
+
+<!-- <meta name="viewport" content="user-scalable=no,initial-scale=0.8333" /> -->
+<!-- <meta name="viewport" content="user-scalable=no,initial-scale=0.5" /> -->
 
 <!-- Eliminate url and button bars if added to home screen -->
 <meta name="apple-mobile-web-app-capable" content="yes" />
 
 <!-- Choose how to handle the phone status bar -->
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<!-- <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" /> -->
 
 <!-- use apple-touch-icon-precomposed to avoid the glossy finish,
      alternative is apple-touch-icon -->
@@ -61,8 +62,10 @@ body {
  padding: 0px ;
  color: #212121 ;
  font-family: Helvetica ;
- font-size: 14px ;
+ font-size: 13px ;
 }
+
+button { margin: 0; padding: 0; font-size: 0.7em; }
 </style>
 
 <script>
@@ -85,8 +88,88 @@ function BlockMove(event) {
       onload="nascom_init();"
       onUnload="nascom_unload();" >
 
-<input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter();"><br>
+<!-- <input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter();"> <br> -->
 <canvas id="screen" width="384" height="240"></canvas>
-<button id="keys">Start Keys of Kraal</button><br>
+<br>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">1</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">2</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">3</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">4</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">5</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">6</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">7</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">8</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">9</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">0</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">-</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">[</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">]</button><br>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">G</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">q</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">w</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">e</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">r</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">t</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">y</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">u</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">i</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">o</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">p</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">@</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">B</button><br>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">C</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">a</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">s</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">d</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">f</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">g</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">h</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">j</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">k</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">l</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">;</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">:</button>
+<button ontouchstart="nasCodeDn(13)" onTouchEnd="nasCodeUp(13)">ENTR</button>
+<br>
+
+<button ontouchstart="nasCodeDn(16)" onTouchEnd="nasCodeUp(16)">sh</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">z</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">x</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">c</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">v</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">b</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">n</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">m</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">,</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">.</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">/</button>
+<button ontouchstart="nasCodeDn(16)" onTouchEnd="nasCodeUp(16)">sh</button>
+
+<br>
+<button ontouchstart="nasCodeDn(37)" onTouchEnd="nasCodeUp(37)">LT</button>
+<button ontouchstart="nasCodeDn(38)" onTouchEnd="nasCodeUp(38)">UP</button>
+<button ontouchstart="nasKeyDn(' ')" onTouchEnd="nasKeyUp(' ')">&nbsp;&nbsp;SPACE&nbsp;&nbsp;</button>
+<button ontouchstart="nasCodeDn(40)" onTouchEnd="nasCodeUp(40)">DN</button>
+<button ontouchstart="nasCodeDn(39)" onTouchEnd="nasCodeUp(39)">RT</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">CR</button>
+<br>
+<button id="keys">Start Keys of Kraal</button>
+
+<!--
+   1 2 3 4 5 6 7 8 9 0 - [ ]
+ GR q w e r t y u i o p @ BS
+CTRL a s d f g h j k l ; : NL CR
+SHIFT z x c v b n m , . / SHIFT
+ LT  UP      SPACE      DN RT
+
+
+   ! " # $ % & ' ( ) ^ = \ _
+ GR Q W E R T Y U I O P @ BS
+CTRL A S D F G H J K L + * NL CR
+SHIFT Z X C V B N M < > ? SHIFT
+ LT  UP      SPACE      DN RT
+
+-->
+
 </body>
 </html>
