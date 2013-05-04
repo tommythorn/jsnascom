@@ -124,6 +124,8 @@ function start_keys() {
 }
 
 function nascom_load(val) {
+    if (!phys_mem32)
+        return;
     var aval = val.split(",");
     for (i = 0; i < 16384; ++i)
         phys_mem32[i] = parseInt(aval[i]);
