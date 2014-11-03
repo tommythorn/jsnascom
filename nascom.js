@@ -93,6 +93,8 @@ function form_enter() {
 var nmi_pending = false;
 
 function nascom_unload() {
+    if (!phys_mem32)
+        return;
     var serialized = "";
     for (i = 0; i < 16384; ++i)
         serialized += phys_mem32[i] + ",";
@@ -212,7 +214,7 @@ function nascom_init() {
     if (document.getElementById("keys"))
         document.getElementById("keys").onclick = start_keys;
 
-    if (fileIOOk)
+    if (fileIOOk && document.getElementById("serial_input"))
         document.getElementById("serial_input").onchange = function() {
         var reader = new FileReader();
         reader.onload = (function(theFile) {
@@ -226,7 +228,7 @@ function nascom_init() {
         reader.readAsBinaryString(this.files[0]);
     }
 
-    if (fileIOOk)
+    if (fileIOOk && document.getElementById('load_nas').onchange)
     document.getElementById('load_nas').onchange = function() {
       var reader = new FileReader();
       reader.onload = (function(theFile) {
@@ -319,28 +321,26 @@ function nascom_clear() {
 
 var kbd_translation = [
 // 7:NC for all rows
-/* 0 */  "````````", // 6:NC 5:Ctrl 4:Shift 3:Ctrl 2:NC 1:NC 0:NC
-/* 1 */  "``txf5bh",
-/* 2 */  "``yzd6nj",
-/* 3 */  "``use7mk",
-/* 4 */  "``iaw8,l",
-/* 5 */  "``oq39.;", // 6:Graph?
+/* 0 */  "`\r```-\n\007", // 4:shift
+/* 1 */  "``txf5bh", // 6:up
+/* 2 */  "``yzd6nj", // 6:left
+/* 3 */  "``use7mk", // 6:down
+/* 4 */  "``iaw8,l", // 6:right
+/* 5 */  "``oq39.;", // 6:Graph
 /* 6 */  "`[p120/:",
-/* 7 */  "`]r c4vg",
-/* 8 */  "`\r```-\n\007"
+/* 7 */  "`]r c4vg"
 ];
 
 var kbd_translation_shifted = [
 // 7:NC for all rows
-/* 0 */  "``@`````", // 6:NC 5:Ctrl 4:Shift 3:Ctrl 2:NC 1:NC 0:NC
-/* 1 */  "``TXF%BH",
-/* 2 */  "``YZD&NJ",
-/* 3 */  "``USE'MK",
-/* 4 */  "``IAW(,L",
-/* 5 */  "``OQ#)>+", // 6:graph?
+/* 0 */  "``@``=``", // 6:CH 5:Ctrl 4:Shift 3:Ctrl 2:NC 1:NC 0:NC
+/* 1 */  "``TXF%BH", // 6:up
+/* 2 */  "``YZD&NJ", // 6:left
+/* 3 */  "``USE'MK", // 6:down
+/* 4 */  "``IAW(,L", // 6:right
+/* 5 */  "``OQ#)>+", // 6:graph
 /* 6 */  "`\\P!\"^?*",
-/* 7 */  "`_R`C$VG",
-/* 8 */  "`````=``"
+/* 7 */  "`_R`C$VG"
 ];
 
 var gr_row = 5;
@@ -349,14 +349,14 @@ var gr_col = 6;
 function sim_key(ch, down) {
     var row = -1, bit, shifted = 0;
 
-    for (var i = 0; i < 9 && row == -1; ++i)
+    for (var i = 0; i < 8 && row == -1; ++i)
         for (bit = 0; bit < 8; ++bit)
             if (kbd_translation[i][7-bit] == ch) {
                 row = i;
                 break;
             }
 
-    for (var i = 0; i < 9 && row == -1; ++i)
+    for (var i = 0; i < 8 && row == -1; ++i)
         for (bit = 0; bit < 8; ++bit)
             if (kbd_translation_shifted[i][7-bit] == ch) {
                 row = i;
@@ -396,8 +396,10 @@ function nascomCharCode(charCode, down) {
     case 40: row = 3, bit = 6; break; // down arrow
     case 39: row = 4, bit = 6; break; // right arrow
     case 18: row = 5, bit = 6; break; // graph
-    case  8: row = 8, bit = 0; break; // backspace
-    case 13: row = 8, bit = 1; break; // enter
+// XXX
+    case  8: row = 0, bit = 0; break; // backspace
+// XXX
+    case 13: row = 0, bit = 1; break; // enter
     case 91: return; // Command/Apple
     case 186: ch = ';'; break;
     case 187: ch = '='; break;
@@ -562,7 +564,7 @@ function writeport(port, value) {
         port0 = value;
 
         if (1 & down_trans)
-            keyp++;
+            keyp = (keyp + 1) & 7;
         if (2 & down_trans) {
             keyp = 0;
 

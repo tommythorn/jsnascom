@@ -1,8 +1,9 @@
+<!DOCTYPE HTML>
 <html manifest="cache-manifest.manifest">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
 <!--    JSNascom: A Nascom 2 emulator in JavaScript
-        Copyright (C) 2011 Tommy Thorn
+        Copyright (C) 2013 Tommy Thorn
 
         Contact details: <nascomhomepage@thorn.ws>
 
@@ -31,21 +32,30 @@
 <head>
 <title>JavaScript Nascom 2 Emulator</title>
 
+<a href="https://github.com/tommythorn/jsnascom"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+
 <!-- Tricks and help from
  http://matt.might.net/articles/how-to-native-iphone-ipad-apps-in-javascript/
 -->
 
+<!-- use apple-touch-icon-precomposed to avoid the glossy finish,
+     alternative is apple-touch-icon -->
+
+<link rel="apple-touch-icon-precomposed"
+      href="images/appIcon.png" />
+<link rel="apple-touch-startup-image"
+      href="images/default.png" />
+
 <!-- Prevent scaling -->
-<!-- <meta name="viewport" content="user-scalable=no, width=device-width" />-->
+ <meta name="viewport" content="user-scalable=no, width=device-width" />
 
-<!-- <meta name="viewport" content="user-scalable=no,initial-scale=0.8333" /> -->
-<!-- <meta name="viewport" content="user-scalable=no,initial-scale=0.5" /> -->
+ <!-- Eliminate url and button bars if added to home screen -->
+ <meta name="apple-mobile-web-app-capable" content="yes" />
 
-<!-- Eliminate url and button bars if added to home screen -->
-<meta name="apple-mobile-web-app-capable" content="yes" />
+ <!-- Choose how to handle the phone status bar -->
+ <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-<!-- Choose how to handle the phone status bar -->
-<!-- <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" /> -->
+ <!-- <meta name="viewport" content="user-scalable=no,initial-scale=0.8333" /> -->
 
 <!-- use apple-touch-icon-precomposed to avoid the glossy finish,
      alternative is apple-touch-icon -->
@@ -83,10 +93,28 @@ function BlockMove(event) {
 <script type="text/javascript" src="repo.js"></script>
 <script type="text/javascript" src="nascom.js"></script>
 </head>
+<body onload="nascom_init();" onUnload="nascom_unload();">
+<h1>Nascom 2 JavaScript emulator</h1>
+<table border="0">
+  <tr valign="top"><td>
 
-<body ontouchmove="BlockMove(event);"
-      onload="nascom_init();"
-      onUnload="nascom_unload();" >
+    <!-- <h1>Nascom 2</h1> -->
+    <canvas id="screen" width="384" height="240"></canvas>
+  <td>
+    <!-- KBD:  <input id="t1" autocapitalize="off" value="" size=6 onchange="form_enter();"><br> -->
+    <button id="reset">Reset</button><br>
+    <button id="clear">Clear memory and reset</button><br>
+    <button id="save">Save state</button><br>
+    <button id="keys">Start Keys of Kraal</button><br>
+    Load NAS:  <input id="load_nas"     type="file"/><br>
+    Load from tape: <input id="serial_input" type="file"/><br>
+    Save to tape: <input id="serial_output" type="file"/><br>
+    Docs:<br>
+    <a href="http://nascomhomepage.com/pdf/Nassys3.pdf">NAS-SYS 3</a>
+    <a href="http://www.nascomhomepage.com/asm/Nap.txt">Nap</a>
+</table>
+
+
 
 <!-- <input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter();"> <br> -->
 <canvas id="screen" width="384" height="240"></canvas>
