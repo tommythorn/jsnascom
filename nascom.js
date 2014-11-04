@@ -102,6 +102,7 @@ function nascom_unload() {
     //console.log("memory="+serialized);
 }
 
+// XXX Shouldn't assume an int, but a char
 function hexdigitValue(ch) {
     if (48 <= ch && ch < 58)
         return ch - 48;
@@ -113,6 +114,7 @@ function hexdigitValue(ch) {
         return -1;
 }
 
+// XXX Shouldn't assume an int, but a char
 function isxdigit(ch) { return hexdigitValue(ch) != -1; }
 
 var fileIOOk = false;
@@ -131,6 +133,99 @@ function nascom_load(val) {
     var aval = val.split(",");
     for (i = 0; i < 16384; ++i)
         phys_mem32[i] = parseInt(aval[i]);
+}
+
+function read_hex(s, p, n) {
+    if (s.length <= p + n) {
+        alert("read past end of file");
+        return null;
+    }
+
+    var v = 0;
+
+    while (n > 0 && p < s.length) {
+        var ch = s.charCodeAt(p);
+
+        if (isxdigit(ch))
+            v = 16*v + hexdigitValue(ch);
+        else {
+            alert("read_hex "+ s.charAt(p)+ "@" + p+ " is not a hex digit");
+
+            return null;
+        }
+
+        ++p;
+        --n;
+    }
+
+    return v;
+}
+
+var start_addr = null;
+
+function load_ihex_line(s, p, memory) {
+    // Expect lines like this:
+    // 10010000214601360121470136007EFE09D2190140
+    // That is (without spaces)
+    // CC AAAAA TT DD DD DD .. DD KK
+    // CC is the byte count (# of DD pairs)
+    // AA is the 16-bit address (offset) from base
+    // TT is the type
+    // KK checksum (twos compliment of sum of all bytes)
+
+    var count = read_hex(s, p, 2);
+    if (count == null)
+        return;
+    p += 2;
+
+    var addr = read_hex(s, p, 4);
+    if (addr == null)
+        return;
+    p += 4;
+
+    var type = read_hex(s, p, 2);
+    if (type == null)
+        return;
+    p += 2;
+
+    if (type == 5)
+        start_addr = addr;
+
+    while (count > 0 && p < s.length) {
+        var v = read_hex(s, p, 2);
+        if (v == null)
+            return;
+        p += 2;
+
+        if (addr >= 2048 && addr < 65536)
+            memory[addr] = v;
+        ++addr;
+        --count;
+    }
+
+    var chk = read_hex(s, p, 2);
+    if (chk == null)
+        return null;
+    p += 2;
+
+    // ignore chk
+
+    while (p < s.length && (s.charAt(p) == '\n' || s.charAt(p) == '\r')) {
+        ++p;
+    }
+
+    return p;
+}
+
+function load_ihex(s, memory) {
+    var p = 0;
+
+    while (p != null && p < s.length && s.charAt(p) == ':') {
+        p = load_ihex_line(s, p + 1, memory);
+    }
+
+    if (p == null || p > s.length)
+        alert("load error");
 }
 
 function nascom_init() {
@@ -259,6 +354,19 @@ function nascom_init() {
       // Read in the image file as a data URL.
       reader.readAsBinaryString(this.files[0]);
     }
+
+    if (document.getElementById('load_ihex'))
+        document.getElementById('load_ihex').onchange = function() {
+            var reader = new FileReader();
+            reader.onload = (function(theFile) {
+                return function(contents) {
+                    load_ihex(contents.target.result, memory);
+                };
+            })(this.files[0]);
+
+            // Read in the image file as a data URL.
+            reader.readAsBinaryString(this.files[0]);
+        }
 
     /* This only works on Chrome */
 
