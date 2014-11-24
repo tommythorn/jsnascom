@@ -18,7 +18,7 @@
 # Matthew Westcott, 14 Daisy Hill Drive, Adlington, Chorley, Lancs PR6 9NE UNITED KINGDOM
 
 upload:
-	rsync --delete -av . tommythorn.kicks-ass.org:public_html/jsnascom
+	rsync --delete -av . tommytho@thorn.ws:www/jsnascom
 
 .PHONY: all
 all: z80 roms.js snapshots.js

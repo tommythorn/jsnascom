@@ -221,12 +221,30 @@ function load_ihex_line(s, p, memory) {
 function load_ihex(s, memory) {
     var p = 0;
 
+    start_addr = 4096|0;
+
     while (p != null && p < s.length && s.charAt(p) == ':') {
         p = load_ihex_line(s, p + 1, memory);
     }
 
     if (p == null || p > s.length)
         alert("load error");
+    else {
+        z80_reset();
+        replay_kbd("E"+(start_addr|0).toString(16)+"\n");
+    }
+}
+
+function ui_ihex_load() {
+    var reader = new FileReader();
+    reader.onload = (function(theFile) {
+        return function(contents) {
+            load_ihex(contents.target.result, memory);
+        };
+    })(document.getElementById('load_ihex').files[0]);
+
+    // Read in the image file as a data URL.
+    reader.readAsBinaryString(document.getElementById('load_ihex').files[0]);
 }
 
 function nascom_init() {
@@ -357,17 +375,12 @@ function nascom_init() {
     }
 
     if (document.getElementById('load_ihex'))
-        document.getElementById('load_ihex').onchange = function() {
-            var reader = new FileReader();
-            reader.onload = (function(theFile) {
-                return function(contents) {
-                    load_ihex(contents.target.result, memory);
-                };
-            })(this.files[0]);
+        document.getElementById('load_ihex').onchange = ui_ihex_load;
 
-            // Read in the image file as a data URL.
-            reader.readAsBinaryString(this.files[0]);
-        }
+    if (document.getElementById('reload'))
+        document.getElementById('reload').onclick  =
+           function (evt) { ui_ihex_load();
+                            return false; };
 
     /* This only works on Chrome */
 
