@@ -53,6 +53,7 @@ var keyStates = [];
 var keyp = 0;
 var port0 = 0;
 var tape_led = 0;
+var tape_led_last = 0;
 var led_off_str = "";
 var keym = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
@@ -713,13 +714,72 @@ function writeport(port, value) {
             event_next_event = tstates + 25;
         }
 
-        if (tape_led && ((value >> 4) & 1) == 0)
+        if (tape_led && ((value >> 4) & 1) == 0) {
             replay_kbd(led_off_str);
-        tape_led = (value >> 4) & 1;
+            tape_led = (value >> 4) & 1;
+        }
+
+
+        if ((tape_led_last ^ value) & 0x10) {
+            tape_led_last = value & 0x10
+            if (document.getElementById("io"))
+                document.getElementById("io").value = "port 0 tape: " + tape_led;
+
+            if (document.getElementById("led0_tape")) {
+                var x = document.getElementById("led0_tape");
+                if (tape_led_last) {
+                    x.setAttribute("src", "red.png");
+                } else {
+                    x.setAttribute("src", "grey.png");
+                }
+            }
+	}
     }
 
     if (port == 1) {
         console.log("serial out " + value);
+    }
+
+    if (port == 10) {
+        if (document.getElementById("io"))
+            document.getElementById("io").value = "port 10:" + value;
+
+        if (document.getElementById("led1")) {
+            var x = document.getElementById("led1");
+
+            if ((value & 1) == 0) {
+                x.setAttribute("src", "grey.png");
+            } else {
+                x.setAttribute("src", "red.png");
+            }
+        }
+
+      if (document.getElementById("led2")) {
+          var x = document.getElementById("led2")
+          if ((value & 2) == 0) {
+              x.setAttribute("src", "grey.png");
+          } else {
+              x.setAttribute("src", "red.png");
+          }
+      }
+
+      if (document.getElementById("led3")) {
+          var x = document.getElementById("led3");
+          if ((value & 4) == 0) {
+              x.setAttribute("src", "grey.png");
+          } else {
+              x.setAttribute("src", "red.png");
+          }
+      }
+
+      if (document.getElementById("led4")) {
+          var x = document.getElementById("led4");
+          if ((value & 8) == 0) {
+              x.setAttribute("src", "grey.png");
+          } else {
+              x.setAttribute("src", "red.png");
+          }
+      }
     }
 }
 
