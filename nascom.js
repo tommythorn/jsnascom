@@ -342,7 +342,7 @@ function nascom_init() {
         reader.readAsBinaryString(this.files[0]);
     }
 
-    if (fileIOOk && document.getElementById('load_nas').onchange)
+    if (fileIOOk && document.getElementById('load_nas'))
     document.getElementById('load_nas').onchange = function() {
       var reader = new FileReader();
       reader.onload = (function(theFile) {
