@@ -1,29 +1,17 @@
 <!DOCTYPE html>
-<html manifest="cache-manifest.manifest">
+<!-- only for stable versions <html manifest="cache-manifest.manifest"> -->
+<html>
 <head>
 
 <title>JavaScript Nascom 2 Emulator</title>
 
-<meta name="description" content="✨ iOS optimized JS Nascom 2 Emulator">
+<meta name="description" content="iOS optimized JS Nascom 2 Emulator">
 
 <meta charset="utf-8">
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <!-- <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> -->
 <meta name="viewport" content="viewport-fit=cover, user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
-
-<!-- Hmm, this might be useful
-
-<link rel="shortcut icon" href="icon-192.cc73f7f0.png">
-<link rel="apple-touch-icon" sizes="192x192" href="icon-192.cc73f7f0.png">
-<link rel="apple-touch-icon" sizes="168x168" href="icon-168.d304179b.png">
-<link rel="apple-touch-icon" sizes="144x144" href="icon-144.bacc601f.png">
-<link rel="apple-touch-icon" sizes="96x96" href="icon-96.b1ead0df.png">
-<link rel="apple-touch-icon" sizes="72x72" href="icon-72.b120bdc3.png">
-<link rel="apple-touch-icon" sizes="48x48" href="icon-48.92a172be.png">
-
--->
-
 
 <meta name="viewport" content="viewport-fit=cover, user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
 <link rel="manifest" href="manifest.webmanifest">
@@ -64,8 +52,10 @@
 <canvas id="screen" style='position:absolute; left:0px; top:0px;' width="384" height="240"></canvas>
 
 <script>
+  alert("First alert")
+
   (function() {
-      console.log("Alive!");
+      alert("Alive!");
         var
         // Obtain a reference to the canvas element using its id.
         htmlCanvas = document.getElementById('screen'),
@@ -76,7 +66,7 @@
        initialize();
 
        function initialize() {
-           console.log("Initialize!");
+           alert("Initialize!");
            // Register an event listener to call the resizeCanvas() function 
            // each time the window is resized.
            window.addEventListener('resize', resizeCanvas, false);
@@ -84,23 +74,14 @@
            resizeCanvas();
         }
 
-        // Display custom canvas. In this case it's a blue, 5 pixel 
-        // border that resizes along with the browser window.
-        function redraw() {
-           context.strokeStyle = 'blue';
-           context.lineWidth = '5';
-           context.strokeRect(0, 0, window.innerWidth, window.innerHeight);
-        }
-
         // Runs each time the DOM window resize event fires.
         // Resets the canvas dimensions to match window,
         // then draws the new borders accordingly.
         function resizeCanvas() {
-            console.log("resizeCanvas!");
+            alert("resizeCanvas!");
 
             htmlCanvas.width = window.innerWidth;
             htmlCanvas.height = window.innerHeight;
-            // redraw();
         }
     })();
 </script>
