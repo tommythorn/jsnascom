@@ -64,7 +64,8 @@
 <canvas id="screen" style='position:absolute; left:0px; top:0px;' width="384" height="240"></canvas>
 
 <script>
-    (function() {
+  (function() {
+      console.log("Alive!");
         var
         // Obtain a reference to the canvas element using its id.
         htmlCanvas = document.getElementById('screen'),
@@ -75,6 +76,7 @@
        initialize();
 
        function initialize() {
+           console.log("Initialize!");
            // Register an event listener to call the resizeCanvas() function 
            // each time the window is resized.
            window.addEventListener('resize', resizeCanvas, false);
@@ -94,9 +96,11 @@
         // Resets the canvas dimensions to match window,
         // then draws the new borders accordingly.
         function resizeCanvas() {
+            console.log("resizeCanvas!");
+
             htmlCanvas.width = window.innerWidth;
             htmlCanvas.height = window.innerHeight;
-            redraw();
+            // redraw();
         }
     })();
 </script>
