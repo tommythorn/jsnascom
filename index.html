@@ -57,8 +57,8 @@
 </head>
 
 <body class="noselect" onload="nascom_init();" onUnload="nascom_unload();">
+Input: <input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter();">
 <canvas id="screen" width="384" height="240"></canvas>
-<input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter();">
 <br>
 
 <button id="reset">Reset</button><br>
@@ -134,6 +134,8 @@ Docs:<br>
 <button ontouchstart="nasCodeDn(40)" onTouchEnd="nasCodeUp(40)">DN</button>
 <button ontouchstart="nasCodeDn(39)" onTouchEnd="nasCodeUp(39)">RT</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">CR</button>
+<br>
+<button ontouchstart="nasCodeDn(16)">Shift On</button> <button onTouchEnd="nasCodeUp(16)">Shift Off</button>
 
 <!--
    1 2 3 4 5 6 7 8 9 0 - [ ]
