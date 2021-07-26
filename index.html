@@ -43,7 +43,7 @@
       width: 100%;
   }
 
-  button { margin: 0; padding: 0; font-size: 0.745em; }
+  button { margin: 0; padding: 0; font-size: 0.75em; }
 </style>
 
 <script type="text/javascript" src="rom_font.js"></script>
@@ -62,7 +62,6 @@ Input: <input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter
 <button ontouchstart="nasCodeDn(17)">Control On</button> <button onTouchEnd="nasCodeUp(17)">Control Off</button>
 <button id="reset">Reset</button> <button id="clear">Clear memory and reset</button><br>
 <canvas id="screen" width="384" height="240"></canvas>
-<br>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">1</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">2</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">3</button>
@@ -88,7 +87,7 @@ Input: <input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">o</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">p</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">@</button>
-<button ontouchstart="nasEvtDn(8)"     onTouchEnd="nasEvtUp(8)">BS</button><br>
+<button ontouchstart="nasCodeDn(8)"    onTouchEnd="nasCodeUp(8)">BS</button><br>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">a</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">s</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">d</button>
@@ -126,8 +125,7 @@ Input: <input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter
 <br>
 
 
-<button id="keys">
-Start Keys of Kraal</button><br>
+<button id="keys">Start Keys of Kraal</button><br>
 Load NAS:  <input id="load_nas"     type="file"/><br>
 Load from tape: <input id="serial_input" type="file"/><br>
 Save to tape: <input id="serial_output" type="file"/><br>

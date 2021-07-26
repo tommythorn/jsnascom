@@ -662,7 +662,7 @@ function readport(port) {
            #define UART_O_ERROR      2
          */
 
-        if (serial_input.length == serial_input_p || !tape_led)
+        if (serial_input.length == serial_input_p /* || !tape_led */)
             return 64;
         else
             return 192;
