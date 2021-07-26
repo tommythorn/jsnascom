@@ -1,37 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html manifest="cache-manifest.manifest">
 <head>
 
-<script>
-  !function(e, t, a, n, g) {
-      e[n] = e[n] || [],
-      e[n].push(
-          {"gtm.start" : (new Date).getTime(), event:"gtm.js"}
-      );
+<title>JavaScript Nascom 2 Emulator</title>
 
-      var m = t.getElementsByTagName(a)[0],
-          r = t.createElement(a);
-
-      r.async = !0,
-      r.src = "https://--www--.---googletagmanager--.--com--/gtm.js?id=GTM-KNK46BX",
-      m.parentNode.insertBefore(r, m)
-  }
-  <!-- (window, document, "script", "dataLayer"); -->
-</script>
-
-
-<title>I'm trying to learn JavaScript</title>
-
-<meta name="description" content="✨ I'm just trying to learn JavaScript here">
-
-<!--
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/spectre.css@0.5.3,npm/animate.css@3.7.0,npm/swiper@4.4.1/dist/css/swiper.min.css">
-<script src="https://cdn.jsdelivr.net/combine/npm/jquery@3,npm/clipboard@2,npm/dom7@2.1.2,npm/swiper@4,npm/vue@2.5/dist/vue.min.js">
-</script>
-
-<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8">
-</script>
--->
+<meta name="description" content="✨ iOS optimized JS Nascom 2 Emulator">
 
 <meta charset="utf-8">
 
@@ -56,8 +29,135 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="application-name" content="Learning JavaScript">
 
-<body class="noselect">
-  Here's my body!
+<style>
+body {
+ margin: 0px ;
+ padding: 0px ;
+ color: #212121 ;
+ font-family: Helvetica ;
+ font-size: 13px ;
+}
+
+button { margin: 0; padding: 0; font-size: 0.7em; }
+</style>
+
+<script type="text/javascript" src="rom_font.js"></script>
+<script type="text/javascript" src="rom_monitor.js"></script>
+<script type="text/javascript" src="rom_basic.js"></script>
+<script type="text/javascript" src="z80/z80_full.js"></script>
+<script type="text/javascript" src="z80/z80_ops_full.js"></script>
+<script type="text/javascript" src="repo.js"></script>
+<script type="text/javascript" src="nascom.js"></script>
+
+</head>
+
+<body class="noselect" onload="nascom_init();" onUnload="nascom_unload();">
+
+<h1>Nascom 2 JavaScript emulator</h1>
+<table border="0">
+  <tr valign="top"><td>
+
+    <!-- <h1>Nascom 2</h1> -->
+    <canvas id="screen" width="384" height="240"></canvas>
+  <td>
+    <!-- KBD:  <input id="t1" autocapitalize="off" value="" size=6 onchange="form_enter();"><br> -->
+    <button id="reset">Reset</button><br>
+    <button id="clear">Clear memory and reset</button><br>
+    <button id="save">Save state</button><br>
+    <button id="keys">Start Keys of Kraal</button><br>
+    Load NAS:  <input id="load_nas"     type="file"/><br>
+    Load from tape: <input id="serial_input" type="file"/><br>
+    Save to tape: <input id="serial_output" type="file"/><br>
+    Docs:<br>
+    <a href="http://nascomhomepage.com/pdf/Nassys3.pdf">NAS-SYS 3</a>
+    <a href="http://www.nascomhomepage.com/asm/Nap.txt">Nap</a>
+</table>
+
+
+
+<!-- <input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter();"> <br> -->
+<canvas id="screen" width="384" height="240"></canvas>
+<br>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">1</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">2</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">3</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">4</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">5</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">6</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">7</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">8</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">9</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">0</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">-</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">[</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">]</button><br>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">G</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">q</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">w</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">e</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">r</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">t</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">y</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">u</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">i</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">o</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">p</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">@</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">B</button><br>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">C</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">a</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">s</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">d</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">f</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">g</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">h</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">j</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">k</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">l</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">;</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">:</button>
+<button ontouchstart="nasCodeDn(13)" onTouchEnd="nasCodeUp(13)">ENTR</button>
+<br>
+
+<button ontouchstart="nasCodeDn(16)" onTouchEnd="nasCodeUp(16)">sh</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">z</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">x</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">c</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">v</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">b</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">n</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">m</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">,</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">.</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">/</button>
+<button ontouchstart="nasCodeDn(16)" onTouchEnd="nasCodeUp(16)">sh</button>
+
+<br>
+<button ontouchstart="nasCodeDn(37)" onTouchEnd="nasCodeUp(37)">LT</button>
+<button ontouchstart="nasCodeDn(38)" onTouchEnd="nasCodeUp(38)">UP</button>
+<button ontouchstart="nasKeyDn(' ')" onTouchEnd="nasKeyUp(' ')">&nbsp;&nbsp;SPACE&nbsp;&nbsp;</button>
+<button ontouchstart="nasCodeDn(40)" onTouchEnd="nasCodeUp(40)">DN</button>
+<button ontouchstart="nasCodeDn(39)" onTouchEnd="nasCodeUp(39)">RT</button>
+<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">CR</button>
+<br>
+<button id="keys">Start Keys of Kraal</button>
+
+<!--
+   1 2 3 4 5 6 7 8 9 0 - [ ]
+ GR q w e r t y u i o p @ BS
+CTRL a s d f g h j k l ; : NL CR
+SHIFT z x c v b n m , . / SHIFT
+ LT  UP      SPACE      DN RT
+
+
+   ! " # $ % & ' ( ) ^ = \ _
+ GR Q W E R T Y U I O P @ BS
+CTRL A S D F G H J K L + * NL CR
+SHIFT Z X C V B N M < > ? SHIFT
+ LT  UP      SPACE      DN RT
+
+-->
+
 </body>
 
 </html>
