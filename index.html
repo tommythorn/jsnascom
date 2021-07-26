@@ -30,6 +30,11 @@
       border: 0;
       overflow: hidden; /* No more scroll bar */
       display: block;  /* No floating content on sides */
+
+      -webkit-user-select: none;
+      -moz-user-select: -moz-none;
+      -ms-user-select: none;
+      user-select: none;
   }
 
   canvas {
@@ -57,7 +62,9 @@
 </head>
 
 <body class="noselect" onload="nascom_init();" onUnload="nascom_unload();">
-Input: <input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter();"><br>
+  Input: <input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter();">
+<button ontouchstart="nasCodeDn(8)" onTouchEnd="nasCodeUp(8)">BackSpace</button><br>
+<br>
 <button ontouchstart="nasCodeDn(16)">Shift On</button> <button onTouchEnd="nasCodeUp(16)">Shift Off</button>
 <button ontouchstart="nasCodeDn(17)">Control On</button> <button onTouchEnd="nasCodeUp(17)">Control Off</button>
 <button id="reset">Reset</button> <button id="clear">Clear memory and reset</button><br>
@@ -87,7 +94,6 @@ Input: <input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">o</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">p</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">@</button>
-<button ontouchstart="nasCodeDn(8)"    onTouchEnd="nasCodeUp(8)">BS</button><br>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">a</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">s</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">d</button>
@@ -129,7 +135,7 @@ Input: <input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter
 <button onclick="load_tape('INVASION.CAS', '1000')">Invasion</button>
 <button onclick="load_tape('JAILBRK.CAS',  '20EA')">Jailbreak</button>
 <button onclick="load_basic('KEYS.CAS')">Start Keys of Kraal</button>
-<button onclick="load_tape('LUNARLAN.CAS',  'C80')">Lunar Lander</button>
+<!-- no workie? <button onclick="load_tape('LUNARLAN.CAS',  'C80')">Lunar Lander</button> -->
 <button onclick="load_tape('SPEX.CAS',     '1000')">Spex</button>
 
 Load NAS:  <input id="load_nas"     type="file"/><br>
