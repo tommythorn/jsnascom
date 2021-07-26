@@ -120,14 +120,6 @@ function isxdigit(ch) { return hexdigitValue(ch) != -1; }
 
 var fileIOOk = false;
 
-function start_keys() {
-    serial_input = repo['KEYS.CAS'];
-    serial_input_p = 0;
-    z80_reset();
-    replay_kbd("j\n\ncload\n");
-    led_off_str = "run\n";
-}
-
 function load_tape(tape) {
     serial_input = repo[tape];
     serial_input_p = 0;
@@ -291,7 +283,6 @@ function nascom_init() {
         var xx = document.getElementById("t1");
 
         if (xx) {
-            //xx.onclick = start_keys;
             //xx.onkeydown  = function (evt) { alert("keydown"+(evt.which?evt.which :evt.keyCode)); return false; };
             //xx.onkeyup    = function (evt) { alert("keyup"+(evt.which?evt.which :evt.keyCode));   return false; };
             xx.onkeypress    = function (evt) {
@@ -332,9 +323,6 @@ function nascom_init() {
 
     if (document.getElementById("save"))
         document.getElementById("save").onclick = nascom_unload;
-
-    if (document.getElementById("keys"))
-        document.getElementById("keys").onclick = start_keys;
 
     if (fileIOOk && document.getElementById("serial_input"))
         document.getElementById("serial_input").onchange = function() {
