@@ -128,12 +128,12 @@ function load_basic(tape) {
     led_off_str = "run\n";
 }
 
-function load_tape(tape) {
+function load_tape(tape,start) {
     serial_input = repo[tape];
     serial_input_p = 0;
     z80_reset();
     replay_kbd("r\n");
-    led_off_str = "e1000\n";
+    led_off_str = "e"+start+"\n";
 }
 
 function nascom_load(val) {
@@ -665,6 +665,10 @@ function readport(port) {
            #define UART_P_ERROR      4
            #define UART_O_ERROR      2
          */
+
+        if (tape_led && ((value >> 4) & 1) == 0) {
+            replay_kbd(led_off_str);
+        }
 
         if (serial_input.length == serial_input_p || !tape_led)
             return 64;
