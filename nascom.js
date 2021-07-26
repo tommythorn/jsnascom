@@ -662,7 +662,7 @@ function readport(port) {
            #define UART_O_ERROR      2
          */
 
-        if (serial_input.length == serial_input_p /* || !tape_led */)
+        if (serial_input.length == serial_input_p || !tape_led)
             return 64;
         else
             return 192;
@@ -727,11 +727,7 @@ function writeport(port, value) {
             event_next_event = tstates + 25;
         }
 
-        if (tape_led && ((value >> 4) & 1) == 0) {
-            replay_kbd(led_off_str);
-            tape_led = (value >> 4) & 1;
-        }
-
+        tape_led = (value >> 4) & 1;
 
         if ((tape_led_last ^ value) & 0x10) {
             tape_led_last = value & 0x10
