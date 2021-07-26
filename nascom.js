@@ -120,12 +120,20 @@ function isxdigit(ch) { return hexdigitValue(ch) != -1; }
 
 var fileIOOk = false;
 
-function load_tape(tape) {
+function load_basic(tape) {
     serial_input = repo[tape];
     serial_input_p = 0;
     z80_reset();
     replay_kbd("j\n\ncload\n");
     led_off_str = "run\n";
+}
+
+function load_tape(tape) {
+    serial_input = repo[tape];
+    serial_input_p = 0;
+    z80_reset();
+    replay_kbd("r\n");
+    led_off_str = "e1000\n";
 }
 
 function nascom_load(val) {
