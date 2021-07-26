@@ -9,7 +9,7 @@
 <meta charset="utf-8">
 
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> -->
 <meta name="viewport" content="viewport-fit=cover, user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
 
 <!-- Hmm, this might be useful
@@ -35,10 +35,10 @@ body {
  padding: 0px ;
  color: #212121 ;
  font-family: Helvetica ;
- font-size: 13px ;
+ font-size: 14px ;
 }
 
-button { margin: 0; padding: 0; font-size: 0.7em; }
+button { margin: 0; padding: 0; font-size: 0.73em; }
 </style>
 
 <script type="text/javascript" src="rom_font.js"></script>
@@ -54,28 +54,25 @@ button { margin: 0; padding: 0; font-size: 0.7em; }
 <body class="noselect" onload="nascom_init();" onUnload="nascom_unload();">
 
 <h1>Nascom 2 JavaScript emulator</h1>
-<table border="0">
-  <tr valign="top"><td>
 
-    <!-- <h1>Nascom 2</h1> -->
-    <canvas id="screen" width="384" height="240"></canvas>
-  <td>
-    <!-- KBD:  <input id="t1" autocapitalize="off" value="" size=6 onchange="form_enter();"><br> -->
-    <button id="reset">Reset</button><br>
-    <button id="clear">Clear memory and reset</button><br>
-    <button id="save">Save state</button><br>
-    <button id="keys">Start Keys of Kraal</button><br>
-    Load NAS:  <input id="load_nas"     type="file"/><br>
-    Load from tape: <input id="serial_input" type="file"/><br>
-    Save to tape: <input id="serial_output" type="file"/><br>
-    Docs:<br>
-    <a href="http://nascomhomepage.com/pdf/Nassys3.pdf">NAS-SYS 3</a>
-    <a href="http://www.nascomhomepage.com/asm/Nap.txt">Nap</a>
-</table>
+<canvas id="screen" width="384" height="240"></canvas>
 
+<br>
 
+<button id="reset">Reset</button><br>
+<button id="clear">Clear memory and reset</button><br>
+<button id="save">Save state</button><br>
+<button id="keys">
+Start Keys of Kraal</button><br>
+Load NAS:  <input id="load_nas"     type="file"/><br>
+Load from tape: <input id="serial_input" type="file"/><br>
+Save to tape: <input id="serial_output" type="file"/><br>
+Docs:<br>
+<a href="http://nascomhomepage.com/pdf/Nassys3.pdf">NAS-SYS 3</a>
+<a href="http://www.nascomhomepage.com/asm/Nap.txt">Nap</a>
 
-<!-- <input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter();"> <br> -->
+<input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter();"> <br>
+
 <canvas id="screen" width="384" height="240"></canvas>
 <br>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">1</button>
