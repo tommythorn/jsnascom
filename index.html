@@ -43,7 +43,7 @@
       width: 100%;
   }
 
-  button { margin: 0; padding: 0; font-size: 0.74em; }
+  button { margin: 0; padding: 0; font-size: 0.745em; }
 </style>
 
 <script type="text/javascript" src="rom_font.js"></script>
@@ -57,11 +57,9 @@
 </head>
 
 <body class="noselect" onload="nascom_init();" onUnload="nascom_unload();">
-
-<h1>Nascom 2</h1>
-
 <canvas id="screen" width="384" height="240"></canvas>
-
+<br>
+<input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter();">
 <br>
 
 <button id="reset">Reset</button><br>
@@ -75,8 +73,6 @@ Save to tape: <input id="serial_output" type="file"/><br>
 Docs:<br>
 <a href="http://nascomhomepage.com/pdf/Nassys3.pdf">NAS-SYS 3</a>
 <a href="http://www.nascomhomepage.com/asm/Nap.txt">Nap</a>
-
-<input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter();"> <br>
 <br>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">1</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">2</button>
@@ -103,7 +99,7 @@ Docs:<br>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">o</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">p</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">@</button>
-<button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">B</button><br>
+<button ontouchstart="nasEvtDn(8)" onTouchEnd="nasEvtUp(8)">B</button><br>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">C</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">a</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">s</button>
@@ -116,7 +112,7 @@ Docs:<br>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">l</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">;</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">:</button>
-<button ontouchstart="nasCodeDn(13)" onTouchEnd="nasCodeUp(13)">ENTR</button>
+<button ontouchstart="nasCodeDn(13)" onTouchEnd="nasCodeUp(13)">NL</button>
 <br>
 
 <button ontouchstart="nasCodeDn(16)" onTouchEnd="nasCodeUp(16)">sh</button>
@@ -135,12 +131,10 @@ Docs:<br>
 <br>
 <button ontouchstart="nasCodeDn(37)" onTouchEnd="nasCodeUp(37)">LT</button>
 <button ontouchstart="nasCodeDn(38)" onTouchEnd="nasCodeUp(38)">UP</button>
-<button ontouchstart="nasKeyDn(' ')" onTouchEnd="nasKeyUp(' ')">&nbsp;&nbsp;SPACE&nbsp;&nbsp;</button>
+<button ontouchstart="nasKeyDn(' ')" onTouchEnd="nasKeyUp(' ')">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SPACE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
 <button ontouchstart="nasCodeDn(40)" onTouchEnd="nasCodeUp(40)">DN</button>
 <button ontouchstart="nasCodeDn(39)" onTouchEnd="nasCodeUp(39)">RT</button>
 <button ontouchstart="nasEvtDn(event)" onTouchEnd="nasEvtUp(event)">CR</button>
-<br>
-<button id="keys">Start Keys of Kraal</button>
 
 <!--
    1 2 3 4 5 6 7 8 9 0 - [ ]
