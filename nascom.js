@@ -128,6 +128,14 @@ function start_keys() {
     led_off_str = "run\n";
 }
 
+function load_tape(tape) {
+    serial_input = repo[tape];
+    serial_input_p = 0;
+    z80_reset();
+    replay_kbd("j\n\ncload\n");
+    led_off_str = "run\n";
+}
+
 function nascom_load(val) {
     if (!phys_mem32)
         return;
