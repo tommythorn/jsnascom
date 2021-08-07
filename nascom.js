@@ -421,6 +421,8 @@ function nascom_init() {
 
     if (val !== null)
         nascom_load(val);
+    else
+        alert("no stored state");
 
     // NASSYS-3
     for (i = 0; i < 0x800; i++)
