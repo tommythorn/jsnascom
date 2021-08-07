@@ -94,8 +94,10 @@ function form_enter() {
 var nmi_pending = false;
 
 function nascom_unload() {
-    if (!phys_mem32)
+    if (!phys_mem32) {
+        alert("no phys_mem32?");
         return;
+    }
     var serialized = "";
     for (i = 0; i < 16384; ++i)
         serialized += phys_mem32[i] + ",";
