@@ -64,7 +64,6 @@
 <body class="noselect" onload="nascom_init();" onUnload="nascom_unload();">
   Input: <input id="t1" autocapitalize="off" value="" size=32 onchange="form_enter();">
   <button ontouchstart="nasCodeDn(8)" onTouchEnd="nasCodeUp(8)">BackSpace</button><br>
-  <button id="save">Save</button>
 <br>
 <button ontouchstart="nasCodeDn(16)">Shift On</button> <button onTouchEnd="nasCodeUp(16)">Shift Off</button>
 <button ontouchstart="nasCodeDn(17)">Control On</button> <button onTouchEnd="nasCodeUp(17)">Control Off</button>
@@ -142,6 +141,7 @@
 Load NAS:  <input id="load_nas"     type="file"/><br>
 Load from tape: <input id="serial_input" type="file"/><br>
 Save to tape: <input id="serial_output" type="file"/><br>
+<button id="save">Save</button>
 Docs:<br>
 <a href="http://nascomhomepage.com/pdf/Nassys3.pdf">NAS-SYS 3</a>
 <a href="http://www.nascomhomepage.com/asm/Nap.txt">Nap</a>
